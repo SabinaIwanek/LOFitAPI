@@ -1,4 +1,4 @@
-﻿namespace LOFitAPI.Controllers.PostModels
+﻿namespace LOFitAPI.Controllers.PostModels.Registration
 {
     public class UzytkownikPostModel
     {

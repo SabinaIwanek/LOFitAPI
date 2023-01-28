@@ -4,9 +4,9 @@ using System.Text;
 
 namespace LOFitAPI.DbControllers.Accounts
 {
-    public static class UzytkownikDbController
+    public class AdminDbController
     {
-        public static bool Create(UzytkownikPostModel form)
+        public static bool Create(AdminPostModel form)
         {
             using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
             {
@@ -22,7 +22,7 @@ namespace LOFitAPI.DbControllers.Accounts
                     reader.Close();
 
                     //Odczyt id utworzonego użytkownika
-                    string query2 = "SELECT TOP 1 * FROM Uzytkownik ORDER BY data_zalozenia DESC";
+                    string query2 = "SELECT TOP 1 * FROM Administrator ORDER BY data_zalozenia DESC";
 
                     SqlCommand command2 = new SqlCommand(query2, Connection);
                     SqlDataReader reader2 = command2.ExecuteReader();
@@ -38,7 +38,7 @@ namespace LOFitAPI.DbControllers.Accounts
 
                     //Utworzenie konta
                     string query3 = $"INSERT INTO Konto (email,haslo,typ_konta,id_uzytkownika)" +
-                                    $"VALUES ('{form.Email}','{form.Haslo}',{1},{id})";
+                                    $"VALUES ('{form.Email}','{form.Haslo}',{0},{id})";
 
                     SqlCommand command3 = new SqlCommand(query3, Connection);
                     SqlDataReader reader3 = command3.ExecuteReader();
@@ -47,7 +47,7 @@ namespace LOFitAPI.DbControllers.Accounts
 
                     Connection.Close();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     return false;
                 }
@@ -55,37 +55,10 @@ namespace LOFitAPI.DbControllers.Accounts
 
             return true;
         }
-        private static string ReturnQuery(UzytkownikPostModel form)
+        private static string ReturnQuery(AdminPostModel form)
         {
-            StringBuilder insert = new StringBuilder("INSERT INTO Uzytkownik(plec");
-            StringBuilder values = new StringBuilder($"VALUES ({form.Plec}");
-
-            if(form.Imie != null)
-            {
-                insert.Append(",imie");
-                values.Append($",'{form.Imie}'");
-            }
-
-            if(form.Nazwisko != null)
-            {
-                insert.Append(",nazwisko");
-                values.Append($",'{form.Nazwisko}'");
-            }
-
-            if (form.Data_urodzenia != null)
-            {
-                insert.Append(",data_urodzenia");
-                values.Append($",'{form.Data_urodzenia?.ToString("yyyy-MM-dd")}'");
-            }
-
-            if (form.Nr_telefonu != null)
-            {
-                insert.Append(",nr_telefonu");
-                values.Append($",{form.Nr_telefonu}");
-            }
-
-            insert.Append(",data_zalozenia)");
-            values.Append($",'{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}')");
+            StringBuilder insert = new StringBuilder("INSERT INTO Admin(imie,nazwisko,data_zalozenia)");
+            StringBuilder values = new StringBuilder($"VALUES ('{form.Imie}','{form.Nazwisko}','{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}')");
 
             insert.Append(values);
 
