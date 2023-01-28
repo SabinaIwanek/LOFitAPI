@@ -21,7 +21,8 @@ namespace LOFitAPI.Controllers
         [HttpPost]
         public ActionResult<string> Authenticate(LoginPostModel form)
         {
-            if (form == null) return BadRequest();
+            if (form == null || form.Email == null || form.Email == string.Empty) return BadRequest();
+            if (form.Password == null || form.Password == string.Empty) return BadRequest();
 
             if (!KontoDbController.IsOkLogin(form)) return Unauthorized();
 
@@ -43,6 +44,18 @@ namespace LOFitAPI.Controllers
             var tokenToReturn = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
 
             return Ok(tokenToReturn);
+        }
+
+        [Route("sendcode")]
+        [HttpPost]
+        public ActionResult<string> SendCode(string email)
+        {
+            if (email == null || email == string.Empty) return BadRequest();
+
+            if (!KontoDbController.SendForgottenCode(email)) return Ok($"Nie ma takiego konta: {email}.");
+
+            return Ok($"Wysłano wiadomość na adres {email}.");
+
         }
     }
 }
