@@ -1,4 +1,5 @@
-﻿using LOFitAPI.Controllers.PostModels.Login;
+﻿using LOFitAPI.Controllers.GetModel;
+using LOFitAPI.Controllers.PostModels.Login;
 using LOFitAPI.DbControllers.Accounts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -19,12 +20,13 @@ namespace LOFitAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult<string> Authenticate(LoginPostModel form)
+        public ActionResult<TokenGetModel> Authenticate(LoginPostModel form)
         {
             if (form == null || form.Email == null || form.Email == string.Empty) return BadRequest();
             if (form.Password == null || form.Password == string.Empty) return BadRequest();
 
-            if (!KontoDbController.IsOkLogin(form)) return Unauthorized();
+            int accountType = KontoDbController.IsOkLogin(form);
+            if (accountType == 4) return Unauthorized();
 
             var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["Authentication:SecretForKey"]));
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -43,18 +45,19 @@ namespace LOFitAPI.Controllers
                 signingCredentials);
             var tokenToReturn = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
 
-            return Ok(tokenToReturn);
+            return Ok(new TokenGetModel(accountType, tokenToReturn));
         }
 
-        [Route("sendcode")]
-        [HttpPost]
+        [Route("sendcode/{email}")]
+        [HttpGet]
         public ActionResult<string> SendCode(string email)
         {
             if (email == null || email == string.Empty) return BadRequest();
 
-            if (!KontoDbController.SendForgottenCode(email)) return Ok($"Nie ma takiego konta: {email}.");
+            if (!KontoDbController.SendForgottenCode(email)) 
+                return Ok($"Nie ma takiego konta: {email}.");
 
-            return Ok($"Wysłano wiadomość na adres {email}.");
+            return Ok($"Ok");
 
         }
     }

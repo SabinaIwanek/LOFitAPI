@@ -12,6 +12,6 @@ namespace LOFitAPI.Controllers.PostModels.Registration
         public DateTime? Data_urodzenia { get; set; }
         public int? Nr_telefonu { get; set; }
         public string? Miejscowosc { get; set; }
-        public TypTrenera Typ_trenera { get; set; }
+        public int Typ_trenera { get; set; }
     }
 }

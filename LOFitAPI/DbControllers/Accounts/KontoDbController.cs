@@ -1,4 +1,5 @@
-﻿using LOFitAPI.Controllers.PostModels.Login;
+﻿using LOFitAPI.Controllers.GetModel;
+using LOFitAPI.Controllers.PostModels.Login;
 using LOFitAPI.Tools;
 using Microsoft.Data.SqlClient;
 
@@ -6,19 +7,19 @@ namespace LOFitAPI.DbControllers.Accounts
 {
     public class KontoDbController
     {
-        public static bool IsOkLogin(LoginPostModel form)
+        public static int IsOkLogin(LoginPostModel form)
         {
             if (form.IsCode)
             {
-                if (form.Code == null) return false;
+                if (form.Code == null) return 4;
                 ChangeForgottenPassword(form);
             }
 
             return IsOkPassword(form);
         }
-        private static bool IsOkPassword(LoginPostModel form)
+        private static int IsOkPassword(LoginPostModel form)
         {
-            bool isOk = false;
+            int type = 4; //error
 
             using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
             {
@@ -30,14 +31,16 @@ namespace LOFitAPI.DbControllers.Accounts
                 while (reader.Read())
                 {
                     if (reader[2].ToString() == form.Password)
-                        isOk = true;
+                    {
+                        type = (int)reader[3];
+                    }
                 }
 
                 reader.Close();
                 Connection.Close();
             }
 
-            return isOk;
+            return type;
         }
         private static bool ChangeForgottenPassword(LoginPostModel form)
         {

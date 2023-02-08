@@ -10,12 +10,14 @@ namespace LOFitAPI.Controllers
     {
         [Route("user")]
         [HttpPost]
-        public ActionResult<string> RegistrationUzytkownik(UzytkownikPostModel form)
+        public ActionResult<string> RegistrationUzytkownik(TrenerPostModel formOgolne)
         {
+            UzytkownikPostModel form = new UzytkownikPostModel(formOgolne);
+
             if (form == null) return Ok("Błąd danych.");
 
-            if(UzytkownikDbController.Create(form))
-                return Ok("Założono konto.");
+            if (UzytkownikDbController.Create(form))
+                return Ok("Ok");
 
             return Ok("Błąd połączenia z bazą.");
         }
@@ -27,28 +29,21 @@ namespace LOFitAPI.Controllers
             if (form == null) return Ok("Błąd danych.");
 
             if (AdminDbController.Create(form))
-                return Ok("Założono konto.");
+                return Ok("Ok");
 
             return Ok("Błąd połączenia z bazą.");
         }
 
-        [Route("trener")]
+        [Route("coach")]
         [HttpPost]
         public ActionResult<string> RegistrationTrener(TrenerPostModel form)
         {
             if (form == null) return Ok("Błąd danych.");
 
             if (TrenerDbController.Create(form))
-                return Ok("Założono konto.");
+                return Ok("Ok");
 
             return Ok("Błąd połączenia z bazą.");
-        }
-
-        [Route("user")]
-        [HttpGet]
-        public ActionResult<string> Get()
-        {
-            return Ok("Kurczak");
         }
     }
 }

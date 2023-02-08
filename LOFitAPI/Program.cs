@@ -30,7 +30,6 @@ builder.Services.AddCors(p=>p.AddPolicy("corspolicy", build=>
 {
     build.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
 }));
-//exp://192.168.1.104:19000
 
 var app = builder.Build();
 
