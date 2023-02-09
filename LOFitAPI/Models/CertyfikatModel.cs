@@ -1,6 +1,4 @@
-﻿using LOFitAPI.Enums;
-
-namespace LOFitAPI.Models
+﻿namespace LOFitAPI.Models
 {
     public class CertyfikatModel
     {
@@ -8,8 +6,8 @@ namespace LOFitAPI.Models
         public int Id_trenera { get; set; }
         public string Nazwa { get; set; }
         public string Organizacja { get; set; }
-        public DateOnly Data_certyfikatu { get; set; }
+        public DateTime Data_certyfikatu { get; set; } //DateOnly
         public string Kod_certyfikatu { get; set; }
-        public StatusWeryfikacji Zatwierdzony { get; set; }
+        public int Zatwierdzony { get; set; } //StatusWeryfikacji
     }
 }

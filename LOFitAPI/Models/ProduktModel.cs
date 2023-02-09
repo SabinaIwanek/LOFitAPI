@@ -1,6 +1,4 @@
-﻿using LOFitAPI.Enums;
-
-namespace LOFitAPI.Models
+﻿namespace LOFitAPI.Models
 {
     public class ProduktModel
     {
@@ -9,6 +7,6 @@ namespace LOFitAPI.Models
         public int Ean { get; set; }
         public int Kcla { get; set; }
         public int Gramy { get; set; }
-        public StatusWeryfikacji W_bazie_programu { get; set; }
+        public int W_bazie_programu { get; set; } //StatusWeryfikacji
     }
 }

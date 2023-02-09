@@ -1,6 +1,6 @@
 ﻿namespace LOFitAPI.Models
 {
-    public class ZgloczenieModel
+    public class ZgloszenieModel
     {
         public int Id { get; set; }
         public int Id_trenera { get; set; }
