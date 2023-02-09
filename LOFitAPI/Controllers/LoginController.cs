@@ -33,7 +33,7 @@ namespace LOFitAPI.Controllers
 
             var claimsForToken = new List<Claim>
             {
-                new Claim("sub", form.Email)
+                new Claim(ClaimTypes.Name, form.Email)
             };
 
             var jwtSecurityToken = new JwtSecurityToken(

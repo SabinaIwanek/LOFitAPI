@@ -76,23 +76,14 @@ namespace LOFitAPI.DbControllers.Accounts
         }
         public static bool SendForgottenCode(string email)
         {
-            int? userId = null;
+            int? userId = ReturnUserId(email);
+
+            if (userId == null) return false;
 
             using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
             {
                 Connection.Open();
 
-                SqlCommand command = new SqlCommand($"SELECT * FROM Konto WHERE email = '{email}'", Connection);
-                SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    userId = (int)reader[0];
-                }
-
-                reader.Close();
-
-                if (userId == null) return false;
                 int code = CodeGenerator.Generate();
 
                 SqlCommand command2 = new SqlCommand($"UPDATE Konto SET kod_jednorazowy = '{code}', " +
@@ -109,6 +100,30 @@ namespace LOFitAPI.DbControllers.Accounts
             }
 
             return userId != null;
+        }
+        public static int? ReturnUserId(string? email)
+        {
+            if(email == null) return null;
+
+            int? userId = null;
+
+            using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+            {
+                Connection.Open();
+
+                SqlCommand command = new SqlCommand($"SELECT * FROM Konto WHERE email = '{email}'", Connection);
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    userId = (int)reader[0];
+                }
+
+                reader.Close();
+                Connection.Close();
+            }
+
+            return userId;
         }
     }
 }

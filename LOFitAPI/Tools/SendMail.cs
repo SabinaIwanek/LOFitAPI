@@ -35,7 +35,8 @@ namespace LOFitAPI.Tools
 
                 smtp.Send(myMail);
             }
-            catch { }
+            catch(Exception ex) 
+            { }
         }
     }
 }
