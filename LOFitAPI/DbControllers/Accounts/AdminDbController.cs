@@ -1,6 +1,6 @@
 ﻿using LOFitAPI.Controllers.PostModels.Registration;
+using LOFitAPI.Tools;
 using Microsoft.Data.SqlClient;
-using System.Text;
 
 namespace LOFitAPI.DbControllers.Accounts
 {
@@ -13,8 +13,9 @@ namespace LOFitAPI.DbControllers.Accounts
                 try
                 {
                     Connection.Open();
+
                     //Utworzenie Użytkownika
-                    string query = ReturnQuery(form);
+                    string query = $"INSERT INTO Admin(imie,nazwisko,data_zalozenia) VALUES ('{form.Imie}','{form.Nazwisko}','{SqlTools.ReturnDateTime(DateTime.Now)}')";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
@@ -37,8 +38,7 @@ namespace LOFitAPI.DbControllers.Accounts
                     reader2.Close();
 
                     //Utworzenie konta
-                    string query3 = $"INSERT INTO Konto (email,haslo,typ_konta,id_uzytkownika)" +
-                                    $"VALUES ('{form.Email}','{form.Haslo}',{0},{id})";
+                    string query3 = $"INSERT INTO Konto (email,haslo,typ_konta,id_uzytkownika) VALUES ('{form.Email}','{form.Haslo}',{0},{id})";
 
                     SqlCommand command3 = new SqlCommand(query3, Connection);
                     SqlDataReader reader3 = command3.ExecuteReader();
@@ -54,15 +54,6 @@ namespace LOFitAPI.DbControllers.Accounts
             }
 
             return true;
-        }
-        private static string ReturnQuery(AdminPostModel form)
-        {
-            StringBuilder insert = new StringBuilder("INSERT INTO Admin(imie,nazwisko,data_zalozenia)");
-            StringBuilder values = new StringBuilder($"VALUES ('{form.Imie}','{form.Nazwisko}','{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}')");
-
-            insert.Append(values);
-
-            return insert.ToString();
         }
     }
 }

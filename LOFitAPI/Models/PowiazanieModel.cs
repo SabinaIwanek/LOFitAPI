@@ -9,6 +9,6 @@
         public DateTime Czas_do { get; set; } 
         public bool Zatwierdzone { get; set; }
         public bool Podglad_pelny { get; set; }
-        public DateTime Podglad_od_daty { get; set; }
+        public DateTime? Podglad_od_daty { get; set; }
     }
 }

@@ -140,7 +140,7 @@ namespace LOFitAPI.DbControllers.Accounts
                     model.Imie = reader[1].ToString();
                     model.Nazwisko = reader[2].ToString();
                     model.Plec = (int)reader[3];
-                    try { model.Data_urodzenia = (DateOnly)reader[4]; } catch { model.Data_urodzenia = null; }
+                    try { model.Data_urodzenia = (DateTime)reader[4]; } catch { model.Data_urodzenia = null; }
                     try { model.Nr_telefonu = (int)reader[5]; } catch { model.Nr_telefonu = null; }
                     model.Opis_profilu = reader[6].ToString();
                     model.Miejscowosc = reader[7].ToString();
