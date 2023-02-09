@@ -1,11 +1,11 @@
-﻿namespace LOFitAPI.Models
+﻿namespace LOFitAPI.DbModels
 {
     public class UzytkownikModel
     {
         public int Id { get; set; }
         public string Imie { get; set; }
         public string? Nazwisko { get; set; }
-        public int? Plec { get; set; } //Plec
+        public int Plec { get; set; } //Plec
         public DateTime? Data_urodzenia { get; set; } //DateOnly
         public int? Id_trenera { get; set; }
         public int? Id_dietetyka { get; set; }

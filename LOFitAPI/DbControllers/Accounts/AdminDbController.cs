@@ -15,7 +15,7 @@ namespace LOFitAPI.DbControllers.Accounts
                     Connection.Open();
 
                     //Utworzenie Użytkownika
-                    string query = $"INSERT INTO Admin(imie,nazwisko,data_zalozenia) VALUES ('{form.Imie}','{form.Nazwisko}','{SqlTools.ReturnDateTime(DateTime.Now)}')";
+                    string query = $"INSERT INTO Admin(imie,nazwisko,data_zalozenia) VALUES ('{form.Imie}','{form.Nazwisko}',{SqlTools.ReturnDateTime(DateTime.Now)})";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
@@ -38,7 +38,7 @@ namespace LOFitAPI.DbControllers.Accounts
                     reader2.Close();
 
                     //Utworzenie konta
-                    string query3 = $"INSERT INTO Konto (email,haslo,typ_konta,id_uzytkownika) VALUES ('{form.Email}','{form.Haslo}',{0},{id})";
+                    string query3 = $"INSERT INTO Konto VALUES ('{form.Email}','{form.Haslo}',{0},{id},NULL,NULL)";
 
                     SqlCommand command3 = new SqlCommand(query3, Connection);
                     SqlDataReader reader3 = command3.ExecuteReader();

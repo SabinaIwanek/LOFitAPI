@@ -1,12 +1,12 @@
 ﻿using LOFitAPI.Controllers.PostModels.Registration;
+using LOFitAPI.Tools;
 using Microsoft.Data.SqlClient;
-using System.Text;
 
 namespace LOFitAPI.DbControllers.Accounts
 {
     public static class UzytkownikDbController
     {
-        public static bool Create(UzytkownikPostModel form)
+        public static bool Add(UzytkownikPostModel form)
         {
             using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
             {
@@ -14,7 +14,7 @@ namespace LOFitAPI.DbControllers.Accounts
                 {
                     Connection.Open();
                     //Utworzenie Użytkownika
-                    string query = ReturnQuery(form);
+                    string query = $"INSERT INTO Uzytkownik VALUES('{form.Imie}', {SqlTools.ReturnString(form.Nazwisko)}), {form.Plec}, {SqlTools.ReturnDate(form.Data_urodzenia)}, NULL, NULL, {SqlTools.ReturnInt(form.Nr_telefonu)},{SqlTools.ReturnDateTime(DateTime.Now)}";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
@@ -37,8 +37,7 @@ namespace LOFitAPI.DbControllers.Accounts
                     reader2.Close();
 
                     //Utworzenie konta
-                    string query3 = $"INSERT INTO Konto (email,haslo,typ_konta,id_uzytkownika)" +
-                                    $"VALUES ('{form.Email}','{form.Haslo}',{1},{id})";
+                    string query3 = $"INSERT INTO Konto VALUES ('{form.Email}','{form.Haslo}',{1},{id}, NULL,NULL)";
 
                     SqlCommand command3 = new SqlCommand(query3, Connection);
                     SqlDataReader reader3 = command3.ExecuteReader();
@@ -54,42 +53,6 @@ namespace LOFitAPI.DbControllers.Accounts
             }
 
             return true;
-        }
-        private static string ReturnQuery(UzytkownikPostModel form)
-        {
-            StringBuilder insert = new StringBuilder("INSERT INTO Uzytkownik(plec");
-            StringBuilder values = new StringBuilder($"VALUES ({form.Plec}");
-
-            if(form.Imie != null)
-            {
-                insert.Append(",imie");
-                values.Append($",'{form.Imie}'");
-            }
-
-            if(form.Nazwisko != null)
-            {
-                insert.Append(",nazwisko");
-                values.Append($",'{form.Nazwisko}'");
-            }
-
-            if (form.Data_urodzenia != null)
-            {
-                insert.Append(",data_urodzenia");
-                values.Append($",'{form.Data_urodzenia?.ToString("yyyy-MM-dd")}'");
-            }
-
-            if (form.Nr_telefonu != null)
-            {
-                insert.Append(",nr_telefonu");
-                values.Append($",{form.Nr_telefonu}");
-            }
-
-            insert.Append(",data_zalozenia)");
-            values.Append($",'{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}')");
-
-            insert.Append(values);
-
-            return insert.ToString();
         }
     }
 }

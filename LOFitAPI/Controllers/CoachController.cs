@@ -1,5 +1,5 @@
 ﻿using LOFitAPI.DbControllers.Accounts;
-using LOFitAPI.Models;
+using LOFitAPI.DbModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

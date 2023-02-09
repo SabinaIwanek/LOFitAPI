@@ -1,4 +1,4 @@
-﻿namespace LOFitAPI.Models
+﻿namespace LOFitAPI.DbModels
 {
     public class AdministratorModel
     {
