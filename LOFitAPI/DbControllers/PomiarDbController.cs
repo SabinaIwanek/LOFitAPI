@@ -13,7 +13,7 @@ namespace LOFitAPI.DbControllers
                 try
                 {
                     Connection.Open();
-                    string query = $"INSERT INTO Pomiar VALUES({SqlTools.ReturnString(model.Id_usera)}, '{SqlTools.ReturnDate(model.Data_pomiaru)}', {SqlTools.ReturnDecimal(model.Waga)}, {SqlTools.ReturnDecimal(model.Procent_tluszczu)},{SqlTools.ReturnDecimal(model.Biceps)},{SqlTools.ReturnDecimal(model.Klatka_piersiowa)},{SqlTools.ReturnDecimal(model.Pod_klatka_piersiowa)},{SqlTools.ReturnDecimal(model.Talia)},{SqlTools.ReturnDecimal(model.Pas)},{SqlTools.ReturnDecimal(model.Posladki)},{SqlTools.ReturnDecimal(model.Udo)},{SqlTools.ReturnDecimal(model.Kolano)},{SqlTools.ReturnDecimal(model.Lydka)})";
+                    string query = $"INSERT INTO Pomiar VALUES({SqlTools.ReturnString(model.Id_usera)}, {SqlTools.ReturnDate(model.Data_pomiaru)}, {SqlTools.ReturnDecimal(model.Waga)}, {SqlTools.ReturnDecimal(model.Procent_tluszczu)},{SqlTools.ReturnDecimal(model.Biceps)},{SqlTools.ReturnDecimal(model.Klatka_piersiowa)},{SqlTools.ReturnDecimal(model.Pod_klatka_piersiowa)},{SqlTools.ReturnDecimal(model.Talia)},{SqlTools.ReturnDecimal(model.Pas)},{SqlTools.ReturnDecimal(model.Posladki)},{SqlTools.ReturnDecimal(model.Udo)},{SqlTools.ReturnDecimal(model.Kolano)},{SqlTools.ReturnDecimal(model.Lydka)})";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
@@ -52,7 +52,7 @@ namespace LOFitAPI.DbControllers
 
             return "Ok";
         }
-        public static PomiarModel Get(DateTime date, int idUsera)
+        public static PomiarModel GetOne(DateTime date, int idUsera)
         {
             PomiarModel model = new PomiarModel();
 
@@ -62,7 +62,7 @@ namespace LOFitAPI.DbControllers
                 {
                     Connection.Open();
 
-                    SqlCommand command = new SqlCommand($"Select * from Pomiar WHERE id_usera = {idUsera} AND data_pomiaru = '{SqlTools.ReturnDate(date)}'", Connection);
+                    SqlCommand command = new SqlCommand($"Select * from Pomiar WHERE id_usera = {idUsera} AND data_pomiaru = {SqlTools.ReturnDate(date)}", Connection);
                     SqlDataReader reader = command.ExecuteReader();
 
                     while (reader.Read())

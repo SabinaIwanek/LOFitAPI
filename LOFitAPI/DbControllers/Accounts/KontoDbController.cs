@@ -1,5 +1,7 @@
 ﻿using LOFitAPI.Controllers.GetModel;
 using LOFitAPI.Controllers.PostModels.Login;
+using LOFitAPI.DbModels;
+using LOFitAPI.Enums;
 using LOFitAPI.Tools;
 using Microsoft.Data.SqlClient;
 
@@ -125,6 +127,64 @@ namespace LOFitAPI.DbControllers.Accounts
 
             return userId;
         }
+        public static KontoModel GetOne(int id)
+        {
+            KontoModel model = new KontoModel();
+            try
+            {
+                using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+                {
+                    Connection.Open();
+
+                    SqlCommand command = new SqlCommand($"SELECT * FROM Administrator WHERE id ={id}", Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        model.Id = (int)reader[0];
+                        model.Email = reader[1].ToString();
+                        model.Haslo = reader[2].ToString();
+                        model.Typ_konta = (TypKonta)((int)reader[3]);
+                        model.Id_uzytkownika = (int)reader[4];
+                    }
+
+                    reader.Close();
+                    Connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+            return model;
+        }
+        public static string DeleteKonto(int id)
+        {
+            try
+            {
+                KontoModel model = GetOne(id);
+
+                using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+                {
+                    Connection.Open();
+                    //Utworzenie Użytkownika
+                    string query = $"DELETE FROM Konto WHERE id={id}; DELETE FROM {model.Typ_konta} WHERE id={model.Id_uzytkownika};";
+
+                    SqlCommand command = new SqlCommand(query, Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    reader.Close();
+                    Connection.Close();
+
+                }
+
+                return "Ok";
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+        }
     }
 }
-

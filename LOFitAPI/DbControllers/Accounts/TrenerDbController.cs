@@ -68,7 +68,7 @@ namespace LOFitAPI.DbControllers.Accounts
                 {
                     Connection.Open();
                     //Utworzenie Użytkownika
-                    string query = $"UPDATE Trener SET imie ={form.Imie}, nazwisko={SqlTools.ReturnString(form.Nazwisko)}, plec={form.Plec}, data_urodzenia={SqlTools.ReturnDate(form.Data_urodzenia)}, nr_telefonu={SqlTools.ReturnInt(form.Nr_telefonu)}, opis_profilu={SqlTools.ReturnString(form.Opis_profilu)}, miejscowosc={SqlTools.ReturnString(form.Miejscowosc)}, cena_trening={SqlTools.ReturnDecimal(form.Cena_trening)},czas_trening_min={SqlTools.ReturnInt(form.Czas_trening_min)}, cena_dieta={SqlTools.ReturnDecimal(form.Cena_dieta)},czas_dieta_min={SqlTools.ReturnInt(form.Czas_dieta_min)},zatwierdzony_dietetyk={form.Zatwierdzony_dietetyk},zatwierdzony_trener={form.Zatwierdzony_trener})";
+                    string query = $"UPDATE Trener SET imie ={form.Imie}, nazwisko={SqlTools.ReturnString(form.Nazwisko)}, plec={form.Plec}, data_urodzenia={SqlTools.ReturnDate(form.Data_urodzenia)}, nr_telefonu={SqlTools.ReturnInt(form.Nr_telefonu)}, opis_profilu={SqlTools.ReturnString(form.Opis_profilu)}, miejscowosc={SqlTools.ReturnString(form.Miejscowosc)}, cena_trening={SqlTools.ReturnDecimal(form.Cena_trening)},czas_trening_min={SqlTools.ReturnInt(form.Czas_trening_min)}, cena_dieta={SqlTools.ReturnDecimal(form.Cena_dieta)},czas_dieta_min={SqlTools.ReturnInt(form.Czas_dieta_min)},zatwierdzony_dietetyk={form.Zatwierdzony_dietetyk},zatwierdzony_trener={form.Zatwierdzony_trener} WHERE id = {SqlTools.ReturnString(form.Id)}";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
@@ -144,7 +144,6 @@ namespace LOFitAPI.DbControllers.Accounts
 
                     while (reader.Read())
                     {
-
                         model.Id = (int)reader[0];
                         model.Imie = reader[1].ToString();
                         try { model.Nazwisko = reader[2].ToString(); } catch { model.Nazwisko = null; }
@@ -153,8 +152,8 @@ namespace LOFitAPI.DbControllers.Accounts
                         try { model.Nr_telefonu = (int)reader[5]; } catch { model.Nr_telefonu = null; }
                         try { model.Opis_profilu = reader[6].ToString(); } catch { model.Opis_profilu = null; }
                         try { model.Miejscowosc = reader[7].ToString(); } catch { model.Miejscowosc = null; }
-                        try { model.Cena_treningu = (decimal)reader[8]; } catch { model.Cena_treningu = null; }
-                        try { model.Czas_treningu_min = (int)reader[9]; } catch { model.Czas_treningu_min = null; }
+                        try { model.Cena_trening = (decimal)reader[8]; } catch { model.Cena_trening = null; }
+                        try { model.Czas_trening_min = (int)reader[9]; } catch { model.Czas_trening_min = null; }
                         try { model.Cena_dieta = (decimal)reader[10]; } catch { model.Cena_dieta = null; }
                         try { model.Czas_dieta_min = (int)reader[11]; } catch { model.Czas_dieta_min = null; }
                         model.Zatwierdzony_dietetyk = (int)reader[12];

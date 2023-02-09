@@ -1,4 +1,5 @@
 ﻿using LOFitAPI.Controllers.PostModels.Registration;
+using LOFitAPI.DbModels;
 using LOFitAPI.Tools;
 using Microsoft.Data.SqlClient;
 
@@ -6,7 +7,7 @@ namespace LOFitAPI.DbControllers.Accounts
 {
     public class AdminDbController
     {
-        public static bool Create(AdminPostModel form)
+        public static bool Add(AdminPostModel form)
         {
             using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
             {
@@ -54,6 +55,37 @@ namespace LOFitAPI.DbControllers.Accounts
             }
 
             return true;
+        }
+        public static AdministratorModel GetOne(int id)
+        {
+            AdministratorModel model = new AdministratorModel();
+            try
+            {
+                using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+                {
+                    Connection.Open();
+
+                    SqlCommand command = new SqlCommand($"SELECT * FROM Administrator WHERE id ={id}", Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+
+                        model.Id = (int)reader[0];
+                        model.Imie = reader[1].ToString();
+                        model.Nazwisko = reader[2].ToString();
+                    }
+
+                    reader.Close();
+                    Connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+            return model;
         }
     }
 }
