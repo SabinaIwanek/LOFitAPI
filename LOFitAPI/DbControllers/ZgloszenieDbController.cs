@@ -4,16 +4,16 @@ using Microsoft.Data.SqlClient;
 
 namespace LOFitAPI.DbControllers
 {
-    public class CertyfikatDbController
+    public class ZgloszenieDbController
     {
-        public static string Add(CertyfikatModel model)
+        public static string Add(ZgloszenieModel model)
         {
             using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
             {
                 try
                 {
                     Connection.Open();
-                    string query = $"INSERT INTO Certyfikat VALUES({model.Id_trenera}, '{model.Nazwa}','{model.Organizacja}',{SqlTools.ReturnDate(model.Data_certyfikatu)},'{model.Kod_certyfikatu}',{model.Zatwierdzony})";
+                    string query = $"INSERT INTO Zgloszenie VALUES({model.Id_trenera},{model.Id_usera},'{model.Opis}')";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
@@ -29,14 +29,14 @@ namespace LOFitAPI.DbControllers
 
             return "Ok";
         }
-        public static string Update(CertyfikatModel model)
+        public static string Update(ZgloszenieModel model)
         {
             using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
             {
                 try
                 {
                     Connection.Open();
-                    string query = $"UPDATE Certyfikat SET id_trenera={model.Id_trenera}, nazwa='{model.Nazwa}',organizacja='{model.Organizacja}',data_certyfikatu={SqlTools.ReturnDate(model.Data_certyfikatu)},kod_certyfikatu='{model.Kod_certyfikatu}',zatwierdzony={model.Zatwierdzony} WHERE id = {SqlTools.ReturnString(model.Id)}";
+                    string query = $"UPDATE Zgloszenie SET id_trenera={model.Id_trenera}, id_usera={model.Id_usera},opis='{model.Opis}' WHERE id = {model.Id}";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
@@ -60,7 +60,7 @@ namespace LOFitAPI.DbControllers
                 {
                     Connection.Open();
                     //Utworzenie Użytkownika
-                    string query = $"DELETE FROM Certyfikat WHERE id={id};";
+                    string query = $"DELETE FROM Zgloszenie WHERE id={id};";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
@@ -77,9 +77,9 @@ namespace LOFitAPI.DbControllers
                 return ex.ToString();
             }
         }
-        public static CertyfikatModel GetOne(int id)
+        public static ZgloszenieModel GetOne(int id)
         {
-            CertyfikatModel model = new CertyfikatModel();
+            ZgloszenieModel model = new ZgloszenieModel();
 
             using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
             {
@@ -87,7 +87,7 @@ namespace LOFitAPI.DbControllers
                 {
                     Connection.Open();
 
-                    SqlCommand command = new SqlCommand($"Select * from Certyfikat WHERE id = {id}", Connection);
+                    SqlCommand command = new SqlCommand($"Select * from Zgloszenie WHERE id = {id}", Connection);
                     SqlDataReader reader = command.ExecuteReader();
 
                     while (reader.Read())
@@ -110,9 +110,9 @@ namespace LOFitAPI.DbControllers
 
             return model;
         }
-        public static List<CertyfikatModel> GetList(int id_trenera)
+        public static List<ZgloszenieModel> GetList(int id_trenera)
         {
-            List<CertyfikatModel> list = new List<CertyfikatModel>();
+            List<ZgloszenieModel> list = new List<ZgloszenieModel>();
 
             using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
             {
@@ -120,20 +120,17 @@ namespace LOFitAPI.DbControllers
                 {
                     Connection.Open();
 
-                    SqlCommand command = new SqlCommand($"Select * from Certyfikat WHERE id_trenera = {id_trenera}", Connection);
+                    SqlCommand command = new SqlCommand($"Select * from Zgloszenie WHERE id_trenera = {id_trenera}", Connection);
                     SqlDataReader reader = command.ExecuteReader();
 
                     while (reader.Read())
                     {
-                        CertyfikatModel model = new CertyfikatModel();
+                        ZgloszenieModel model = new ZgloszenieModel();
 
                         model.Id = (int)reader[0];
                         model.Id_trenera = (int)reader[1];
-                        model.Nazwa = reader[2].ToString();
-                        model.Organizacja = reader[3].ToString();
-                        model.Data_certyfikatu = DateTime.Parse(reader[4].ToString());
-                        model.Kod_certyfikatu = reader[5].ToString();
-                        model.Zatwierdzony = (int)reader[6];
+                        model.Id_usera = (int)reader[2];
+                        model.Opis = reader[3].ToString();
 
                         list.Add(model);
                     }
@@ -147,9 +144,9 @@ namespace LOFitAPI.DbControllers
 
             return list;
         }
-        public static List<CertyfikatModel> GetAll()
+        public static List<ZgloszenieModel> GetAll()
         {
-            List<CertyfikatModel> list = new List<CertyfikatModel>();
+            List<ZgloszenieModel> list = new List<ZgloszenieModel>();
 
             using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
             {
@@ -157,20 +154,17 @@ namespace LOFitAPI.DbControllers
                 {
                     Connection.Open();
 
-                    SqlCommand command = new SqlCommand($"Select * from Certyfikat", Connection);
+                    SqlCommand command = new SqlCommand($"Select * from Zgloszenie", Connection);
                     SqlDataReader reader = command.ExecuteReader();
 
                     while (reader.Read())
                     {
-                        CertyfikatModel model = new CertyfikatModel();
+                        ZgloszenieModel model = new ZgloszenieModel();
 
                         model.Id = (int)reader[0];
                         model.Id_trenera = (int)reader[1];
-                        model.Nazwa = reader[2].ToString();
-                        model.Organizacja = reader[3].ToString();
-                        model.Data_certyfikatu = DateTime.Parse(reader[4].ToString());
-                        model.Kod_certyfikatu = reader[5].ToString();
-                        model.Zatwierdzony = (int)reader[6];
+                        model.Id_usera = (int)reader[2];
+                        model.Opis = reader[3].ToString();
 
                         list.Add(model);
                     }
