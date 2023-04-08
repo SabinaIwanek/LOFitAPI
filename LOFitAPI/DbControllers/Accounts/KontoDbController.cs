@@ -7,7 +7,7 @@ using Microsoft.Data.SqlClient;
 
 namespace LOFitAPI.DbControllers.Accounts
 {
-    public class KontoDbController
+    public static class KontoDbController
     {
         public static int IsOkLogin(LoginPostModel form)
         {
@@ -35,6 +35,7 @@ namespace LOFitAPI.DbControllers.Accounts
                     if (reader[2].ToString() == form.Password)
                     {
                         type = (int)reader[3];
+                        if ((int)reader[4] == 1) type = 5;
                     }
                 }
 
@@ -127,6 +128,52 @@ namespace LOFitAPI.DbControllers.Accounts
 
             return userId;
         }
+        public static int? ReturnKontoId(int id, int type)
+        {
+            int? kontoId = null;
+
+            using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+            {
+                Connection.Open();
+
+                SqlCommand command = new SqlCommand($"SELECT id FROM Konto WHERE id_uzytkownika = {id} AND typ_konta = {type}", Connection);
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    kontoId = (int)reader[0];
+                }
+
+                reader.Close();
+                Connection.Close();
+            }
+
+            return kontoId;
+        }
+        public static int? ReturnUserType(string? email)
+        {
+            if (email == null) return null;
+
+            int? accountType = null;
+
+            using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+            {
+                Connection.Open();
+
+                SqlCommand command = new SqlCommand($"SELECT * FROM Konto WHERE email = '{email}'", Connection);
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    accountType = (int)reader[3];
+                }
+
+                reader.Close();
+                Connection.Close();
+            }
+
+            return accountType;
+        }
         public static KontoModel GetOne(int id)
         {
             KontoModel model = new KontoModel();
@@ -136,16 +183,17 @@ namespace LOFitAPI.DbControllers.Accounts
                 {
                     Connection.Open();
 
-                    SqlCommand command = new SqlCommand($"SELECT * FROM Administrator WHERE id ={id}", Connection);
+                    SqlCommand command = new SqlCommand($"SELECT * FROM Konto WHERE id ={id}", Connection);
                     SqlDataReader reader = command.ExecuteReader();
 
                     while (reader.Read())
                     {
                         model.Id = (int)reader[0];
-                        model.Email = reader[1].ToString();
-                        model.Haslo = reader[2].ToString();
+                        model.Email = (string)reader[1];
+                        model.Haslo = (string)reader[2];
                         model.Typ_konta = (TypKonta)((int)reader[3]);
-                        model.Id_uzytkownika = (int)reader[4];
+                        model.Zablokowane = (int)reader[4];
+                        model.Id_uzytkownika = (int)reader[5];
                     }
 
                     reader.Close();
@@ -170,6 +218,69 @@ namespace LOFitAPI.DbControllers.Accounts
                     Connection.Open();
                     //Utworzenie Użytkownika
                     string query = $"DELETE FROM Konto WHERE id={id}; DELETE FROM {model.Typ_konta} WHERE id={model.Id_uzytkownika};";
+
+                    SqlCommand command = new SqlCommand(query, Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    reader.Close();
+                    Connection.Close();
+                }
+
+                return "Ok";
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+        }
+        public static string DeleteKonto(int id, int type)
+        {
+            try
+            {
+                int? kontoId = ReturnKontoId(id, type);
+                if (kontoId == null) return "";
+
+                KontoModel model = GetOne((int)kontoId);
+
+                using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+                {
+                    Connection.Open();
+                    //Utworzenie Użytkownika
+                    string query = $"DELETE FROM Konto WHERE id={kontoId};";
+
+                    SqlCommand command = new SqlCommand(query, Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    reader.Close();
+
+                    string query2 = $"DELETE FROM {model.Typ_konta} WHERE id={model.Id_uzytkownika};";
+
+                    SqlCommand command2 = new SqlCommand(query2, Connection);
+                    SqlDataReader reader2 = command2.ExecuteReader();
+
+                    reader2.Close();
+
+                    Connection.Close();
+                }
+
+                return "Ok";
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+        }
+        public static string BlockKonto(int id, int state)
+        {
+            try
+            {
+                KontoModel model = GetOne(id);
+
+                using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+                {
+                    Connection.Open();
+                    //Utworzenie Użytkownika
+                    string query = $"UPDATE Konto SET zablokowane = {state} where id = {id};";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();

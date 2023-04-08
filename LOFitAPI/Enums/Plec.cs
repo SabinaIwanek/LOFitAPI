@@ -2,9 +2,8 @@
 {
     public enum Plec
     {
-        Kobieta = 0,
-        Mezczyzna = 1,
-        NiePodano = 2,
-        NieOkreślono = 3,
+        NiePodano = 0,
+        Kobieta = 1,
+        Mężczyzna = 2
     }
 }

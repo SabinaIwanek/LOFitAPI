@@ -22,14 +22,29 @@ namespace LOFitAPI.Controllers
             if (idUsera == null)
                 return Unauthorized();
 
-            PomiarModel measurement = PomiarDbController.Get(date, (int)idUsera);
+            PomiarModel measurement = PomiarDbController.GetOne(date, (int)idUsera);
 
             return Ok(measurement);
+        }
+        [HttpGet]
+        [Route("week/{dateString}")]
+        public ActionResult<List<PomiarModel>> GetWeek(string dateString)
+        {
+            DateTime date = DateTime.Parse(dateString);
+
+            int? idUsera = KontoDbController.ReturnUserId(User?.Identity?.Name);
+
+            if (idUsera == null)
+                return Unauthorized();
+
+            List<PomiarModel> measurements = PomiarDbController.GetWeek(date, (int)idUsera);
+
+            return Ok(measurements);
         }
         [HttpPost]
         public ActionResult<string> Add(PomiarModel measurement)
         {
-            int? idUsera = KontoDbController.ReturnUserId(User.Identity.Name);
+            int? idUsera = KontoDbController.ReturnUserId(User.Identity?.Name);
 
             if (idUsera == null)
                 return Unauthorized();
@@ -44,7 +59,7 @@ namespace LOFitAPI.Controllers
         [HttpPut]
         public ActionResult<string> Update(PomiarModel measurement)
         {
-            int? idUsera = KontoDbController.ReturnUserId(User.Identity.Name);
+            int? idUsera = KontoDbController.ReturnUserId(User.Identity?.Name);
 
             if (idUsera == null)
                 return Unauthorized();

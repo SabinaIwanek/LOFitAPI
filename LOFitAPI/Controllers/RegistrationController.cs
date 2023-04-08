@@ -16,7 +16,7 @@ namespace LOFitAPI.Controllers
 
             if (form == null) return Ok("Błąd danych.");
 
-            if (UzytkownikDbController.Create(form))
+            if (UzytkownikDbController.Add(form))
                 return Ok("Ok");
 
             return Ok("Błąd połączenia z bazą.");
@@ -28,7 +28,7 @@ namespace LOFitAPI.Controllers
         {
             if (form == null) return Ok("Błąd danych.");
 
-            if (AdminDbController.Create(form))
+            if (AdminDbController.Add(form))
                 return Ok("Ok");
 
             return Ok("Błąd połączenia z bazą.");
@@ -40,10 +40,7 @@ namespace LOFitAPI.Controllers
         {
             if (form == null) return Ok("Błąd danych.");
 
-            if (TrenerDbController.Create(form))
-                return Ok("Ok");
-
-            return Ok("Błąd połączenia z bazą.");
+            return Ok(TrenerDbController.Add(form));
         }
     }
 }

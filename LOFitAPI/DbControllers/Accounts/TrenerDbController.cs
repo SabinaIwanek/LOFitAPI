@@ -5,7 +5,7 @@ using Microsoft.Data.SqlClient;
 
 namespace LOFitAPI.DbControllers.Accounts
 {
-    public class TrenerDbController
+    public static class TrenerDbController
     {
         public static string Add(TrenerPostModel form)
         {
@@ -19,7 +19,7 @@ namespace LOFitAPI.DbControllers.Accounts
 
                     Connection.Open();
                     //Utworzenie Użytkownika
-                    string query = $"Insert INTO Trener VALUES('{form.Imie}',{SqlTools.ReturnString(form.Imie)},{form.Plec},{SqlTools.ReturnDate(form.Data_urodzenia)}, {SqlTools.ReturnInt(form.Nr_telefonu)},NULL,{SqlTools.ReturnString(form.Miejscowosc)}, NULL, NULL, NULL, NULL,{dietetyk},{trener},{SqlTools.ReturnDateTime(DateTime.Now)})";
+                    string query = $"Insert INTO Trener VALUES('{form.Imie}',{SqlTools.ReturnString(form.Nazwisko)},{form.Plec},{SqlTools.ReturnDate(form.Data_urodzenia)}, {SqlTools.ReturnInt(form.Nr_telefonu)},NULL,{SqlTools.ReturnString(form.Miejscowosc)}, NULL, NULL, NULL, NULL,{dietetyk},{trener},{SqlTools.ReturnDateTime(DateTime.Now)})";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
@@ -42,7 +42,7 @@ namespace LOFitAPI.DbControllers.Accounts
                     reader2.Close();
 
                     //Utworzenie konta
-                    string query3 = $"INSERT INTO Konto VALUES ('{form.Email}','{form.Haslo}',{2},{id},NULL,NULL)";
+                    string query3 = $"INSERT INTO Konto VALUES ('{form.Email}','{form.Haslo}',{2},{0},{id},NULL,NULL)";
 
                     SqlCommand command3 = new SqlCommand(query3, Connection);
                     SqlDataReader reader3 = command3.ExecuteReader();
@@ -85,6 +85,30 @@ namespace LOFitAPI.DbControllers.Accounts
                 return ex.ToString();
             }
         }
+        public static string SetState(int id, int state)
+        {
+            try
+            {
+                using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+                {
+                    Connection.Open();
+
+                    string query = $"UPDATE Trener SET zatwierdzony_dietetyk={state},zatwierdzony_trener={state} WHERE id = {id}";
+
+                    SqlCommand command = new SqlCommand(query, Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    reader.Close();
+                    Connection.Close();
+                }
+
+                return "Ok";
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+        }
         public static List<TrenerModel> GetAll()
         {
             List<TrenerModel> list = new List<TrenerModel>();
@@ -102,15 +126,15 @@ namespace LOFitAPI.DbControllers.Accounts
                         TrenerModel model = new TrenerModel();
 
                         model.Id = (int)reader[0];
-                        model.Imie = reader[1].ToString();
+                        model.Imie = (string)reader[1];
                         try { model.Nazwisko = reader[2].ToString(); } catch { model.Nazwisko = null; }
                         model.Plec = (int)reader[3];
                         try { model.Data_urodzenia = (DateTime)reader[4]; } catch { model.Data_urodzenia = null; }
                         try { model.Nr_telefonu = (int)reader[5]; } catch { model.Nr_telefonu = null; }
                         try { model.Opis_profilu = reader[6].ToString(); } catch { model.Opis_profilu = null; }
                         try { model.Miejscowosc = reader[7].ToString(); } catch { model.Miejscowosc = null; }
-                        try { model.Cena_treningu = (decimal)reader[8]; } catch { model.Cena_treningu = null; }
-                        try { model.Czas_treningu_min = (int)reader[9]; } catch { model.Czas_treningu_min = null; }
+                        try { model.Cena_trening = (decimal)reader[8]; } catch { model.Cena_trening = null; }
+                        try { model.Czas_trening_min = (int)reader[9]; } catch { model.Czas_trening_min = null; }
                         try { model.Cena_dieta = (decimal)reader[10]; } catch { model.Cena_dieta = null; }
                         try { model.Czas_dieta_min = (int)reader[11]; } catch { model.Czas_dieta_min = null; }
                         model.Zatwierdzony_dietetyk = (int)reader[12];
@@ -145,7 +169,7 @@ namespace LOFitAPI.DbControllers.Accounts
                     while (reader.Read())
                     {
                         model.Id = (int)reader[0];
-                        model.Imie = reader[1].ToString();
+                        model.Imie = (string)reader[1];
                         try { model.Nazwisko = reader[2].ToString(); } catch { model.Nazwisko = null; }
                         model.Plec = (int)reader[3];
                         try { model.Data_urodzenia = (DateTime)reader[4]; } catch { model.Data_urodzenia = null; }
@@ -171,6 +195,53 @@ namespace LOFitAPI.DbControllers.Accounts
             }
 
             return model;
+        }
+        
+        // Admin
+        public static List<TrenerModel> GetWgType(int statusWeryfikacji)
+        {
+            List<TrenerModel> list = new List<TrenerModel>();
+            try
+            {
+                using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+                {
+                    Connection.Open();
+
+                    SqlCommand command = new SqlCommand($"SELECT * FROM Trener WHERE zatwierdzony_trener = {statusWeryfikacji}", Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        TrenerModel model = new TrenerModel();
+
+                        model.Id = (int)reader[0];
+                        model.Imie = (string)reader[1];
+                        try { model.Nazwisko = reader[2].ToString(); } catch { model.Nazwisko = null; }
+                        model.Plec = (int)reader[3];
+                        try { model.Data_urodzenia = (DateTime)reader[4]; } catch { model.Data_urodzenia = null; }
+                        try { model.Nr_telefonu = (int)reader[5]; } catch { model.Nr_telefonu = null; }
+                        try { model.Opis_profilu = reader[6].ToString(); } catch { model.Opis_profilu = null; }
+                        try { model.Miejscowosc = reader[7].ToString(); } catch { model.Miejscowosc = null; }
+                        try { model.Cena_trening = (decimal)reader[8]; } catch { model.Cena_trening = null; }
+                        try { model.Czas_trening_min = (int)reader[9]; } catch { model.Czas_trening_min = null; }
+                        try { model.Cena_dieta = (decimal)reader[10]; } catch { model.Cena_dieta = null; }
+                        try { model.Czas_dieta_min = (int)reader[11]; } catch { model.Czas_dieta_min = null; }
+                        model.Zatwierdzony_dietetyk = (int)reader[12];
+                        model.Zatwierdzony_trener = (int)reader[13];
+                        model.Data_zalozenia = (DateTime)reader[14];
+
+                        list.Add(model);
+                    }
+
+                    reader.Close();
+                    Connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return list;
         }
     }
 }

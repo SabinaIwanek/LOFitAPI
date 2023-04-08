@@ -1,10 +1,9 @@
 ﻿using LOFitAPI.DbModels;
-using LOFitAPI.Tools;
 using Microsoft.Data.SqlClient;
 
 namespace LOFitAPI.DbControllers
 {
-    public class ZgloszenieDbController
+    public static class ZgloszenieDbController
     {
         public static string Add(ZgloszenieModel model)
         {
@@ -13,7 +12,7 @@ namespace LOFitAPI.DbControllers
                 try
                 {
                     Connection.Open();
-                    string query = $"INSERT INTO Zgloszenie VALUES({model.Id_trenera},{model.Id_usera},'{model.Opis}')";
+                    string query = $"INSERT INTO Zgloszenie VALUES({model.Id_trenera},{model.Id_usera},'{model.Opis}', 0)";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
@@ -36,7 +35,7 @@ namespace LOFitAPI.DbControllers
                 try
                 {
                     Connection.Open();
-                    string query = $"UPDATE Zgloszenie SET id_trenera={model.Id_trenera}, id_usera={model.Id_usera},opis='{model.Opis}' WHERE id = {model.Id}";
+                    string query = $"UPDATE Zgloszenie SET id_trenera={model.Id_trenera}, id_usera={model.Id_usera},opis='{model.Opis}', status_weryfikacji={model.Status_weryfikacji} WHERE id = {model.Id}";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
@@ -94,11 +93,9 @@ namespace LOFitAPI.DbControllers
                     {
                         model.Id = (int)reader[0];
                         model.Id_trenera = (int)reader[1];
-                        model.Nazwa = reader[2].ToString();
-                        model.Organizacja = reader[3].ToString();
-                        model.Data_certyfikatu = DateTime.Parse(reader[4].ToString());
-                        model.Kod_certyfikatu = reader[5].ToString();
-                        model.Zatwierdzony = (int)reader[6];
+                        model.Id_usera = (int)reader[2];
+                        model.Opis = (string)reader[3];
+                        model.Id_usera = (int)reader[4];
                     }
 
                     reader.Close();
@@ -130,7 +127,8 @@ namespace LOFitAPI.DbControllers
                         model.Id = (int)reader[0];
                         model.Id_trenera = (int)reader[1];
                         model.Id_usera = (int)reader[2];
-                        model.Opis = reader[3].ToString();
+                        model.Opis = (string)reader[3];
+                        model.Id_usera = (int)reader[4];
 
                         list.Add(model);
                     }
@@ -164,7 +162,8 @@ namespace LOFitAPI.DbControllers
                         model.Id = (int)reader[0];
                         model.Id_trenera = (int)reader[1];
                         model.Id_usera = (int)reader[2];
-                        model.Opis = reader[3].ToString();
+                        model.Opis = (string)reader[3];
+                        model.Id_usera = (int)reader[4];
 
                         list.Add(model);
                     }
@@ -177,6 +176,67 @@ namespace LOFitAPI.DbControllers
             }
 
             return list;
+        }
+
+        // Admin
+        public static List<ZgloszenieModel> GetWgType(int statusWeryfikacji)
+        {
+            List<ZgloszenieModel> list = new List<ZgloszenieModel>();
+
+            using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+            {
+                try
+                {
+                    Connection.Open();
+
+                    SqlCommand command = new SqlCommand($"Select * from Zgloszenie WHERE status_weryfikacji={statusWeryfikacji}", Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        ZgloszenieModel model = new ZgloszenieModel();
+
+                        model.Id = (int)reader[0];
+                        model.Id_trenera = (int)reader[1];
+                        model.Id_usera = (int)reader[2];
+                        model.Opis = (string)reader[3];
+                        model.Id_usera = (int)reader[4];
+
+                        list.Add(model);
+                    }
+
+                    reader.Close();
+                    Connection.Close();
+                }
+                catch (Exception ex)
+                { }
+            }
+
+            return list;
+        }
+        public static string SetState(int id, int state)
+        {
+            try
+            {
+                using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+                {
+                    Connection.Open();
+
+                    string query = $"UPDATE Zgloszenie SET status_weryfikacji={state} WHERE id = {id}";
+
+                    SqlCommand command = new SqlCommand(query, Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    reader.Close();
+                    Connection.Close();
+                }
+
+                return "Ok";
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
         }
     }
 }

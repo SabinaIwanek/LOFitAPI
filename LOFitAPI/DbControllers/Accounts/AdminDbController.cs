@@ -5,7 +5,7 @@ using Microsoft.Data.SqlClient;
 
 namespace LOFitAPI.DbControllers.Accounts
 {
-    public class AdminDbController
+    public static class AdminDbController
     {
         public static bool Add(AdminPostModel form)
         {
@@ -16,7 +16,7 @@ namespace LOFitAPI.DbControllers.Accounts
                     Connection.Open();
 
                     //Utworzenie Użytkownika
-                    string query = $"INSERT INTO Admin(imie,nazwisko,data_zalozenia) VALUES ('{form.Imie}','{form.Nazwisko}',{SqlTools.ReturnDateTime(DateTime.Now)})";
+                    string query = $"INSERT INTO Administrator(imie,nazwisko,data_zalozenia) VALUES ('{form.Imie}','{form.Nazwisko}',{SqlTools.ReturnDateTime(DateTime.Now)})";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
@@ -39,7 +39,7 @@ namespace LOFitAPI.DbControllers.Accounts
                     reader2.Close();
 
                     //Utworzenie konta
-                    string query3 = $"INSERT INTO Konto VALUES ('{form.Email}','{form.Haslo}',{0},{id},NULL,NULL)";
+                    string query3 = $"INSERT INTO Konto VALUES ('{form.Email}','{form.Haslo}',{0},{0},{id},NULL,NULL)";
 
                     SqlCommand command3 = new SqlCommand(query3, Connection);
                     SqlDataReader reader3 = command3.ExecuteReader();
@@ -72,8 +72,8 @@ namespace LOFitAPI.DbControllers.Accounts
                     {
 
                         model.Id = (int)reader[0];
-                        model.Imie = reader[1].ToString();
-                        model.Nazwisko = reader[2].ToString();
+                        model.Imie = (string)reader[1];
+                        model.Nazwisko = (string)reader[2];
                     }
 
                     reader.Close();
@@ -86,6 +86,41 @@ namespace LOFitAPI.DbControllers.Accounts
             }
 
             return model;
+        }
+        public static List<AdministratorModel> GetAll()
+        {
+            List<AdministratorModel> list = new List<AdministratorModel>();
+
+            try
+            {
+                using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+                {
+                    Connection.Open();
+
+                    SqlCommand command = new SqlCommand($"SELECT * FROM Administrator", Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        AdministratorModel model = new AdministratorModel();
+
+                        model.Id = (int)reader[0];
+                        model.Imie = (string)reader[1];
+                        model.Nazwisko = (string)reader[2];
+
+                        list.Add(model);
+                    }
+
+                    reader.Close();
+                    Connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+            return list;
         }
     }
 }

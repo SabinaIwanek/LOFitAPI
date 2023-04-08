@@ -11,7 +11,7 @@ namespace LOFitAPI.Tools
         public static int SmtpPort = 587;
         public static string Tittle = "LOFit - odzyskiwanie hasła.";
 
-        public static void Send(string sendTo, int code)
+        public static string Send(string sendTo, int code)
         {
             try
             {
@@ -34,9 +34,10 @@ namespace LOFitAPI.Tools
                 };
 
                 smtp.Send(myMail);
+                return "Ok";
             }
             catch(Exception ex) 
-            { }
+            { return ex.ToString(); }
         }
     }
 }

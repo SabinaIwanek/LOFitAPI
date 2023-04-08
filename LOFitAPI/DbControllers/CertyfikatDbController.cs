@@ -4,7 +4,7 @@ using Microsoft.Data.SqlClient;
 
 namespace LOFitAPI.DbControllers
 {
-    public class CertyfikatDbController
+    public static class CertyfikatDbController
     {
         public static string Add(CertyfikatModel model)
         {
@@ -52,6 +52,30 @@ namespace LOFitAPI.DbControllers
 
             return "Ok";
         }
+        public static string SetState(int id, int state)
+        {
+            try
+            {
+                using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+                {
+                    Connection.Open();
+
+                    string query = $"UPDATE Certyfikat SET zatwierdzony={state} WHERE id = {id}";
+
+                    SqlCommand command = new SqlCommand(query, Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    reader.Close();
+                    Connection.Close();
+                }
+
+                return "Ok";
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+        }
         public static string Delete(int id)
         {
             try
@@ -94,9 +118,9 @@ namespace LOFitAPI.DbControllers
                     {
                         model.Id = (int)reader[0];
                         model.Id_trenera = (int)reader[1];
-                        model.Nazwa = reader[2].ToString();
-                        model.Organizacja = reader[3].ToString();
-                        model.Data_certyfikatu = DateTime.Parse(reader[4].ToString());
+                        model.Nazwa = (string)reader[2];
+                        model.Organizacja = (string)reader[3];
+                        model.Data_certyfikatu = DateTime.Parse((string)reader[4]);
                         model.Kod_certyfikatu = reader[5].ToString();
                         model.Zatwierdzony = (int)reader[6];
                     }
@@ -129,9 +153,9 @@ namespace LOFitAPI.DbControllers
 
                         model.Id = (int)reader[0];
                         model.Id_trenera = (int)reader[1];
-                        model.Nazwa = reader[2].ToString();
-                        model.Organizacja = reader[3].ToString();
-                        model.Data_certyfikatu = DateTime.Parse(reader[4].ToString());
+                        model.Nazwa = (string)reader[2];
+                        model.Organizacja = (string)reader[3];
+                        model.Data_certyfikatu = DateTime.Parse((string)reader[4]);
                         model.Kod_certyfikatu = reader[5].ToString();
                         model.Zatwierdzony = (int)reader[6];
 
@@ -166,9 +190,48 @@ namespace LOFitAPI.DbControllers
 
                         model.Id = (int)reader[0];
                         model.Id_trenera = (int)reader[1];
-                        model.Nazwa = reader[2].ToString();
-                        model.Organizacja = reader[3].ToString();
-                        model.Data_certyfikatu = DateTime.Parse(reader[4].ToString());
+                        model.Nazwa = (string)reader[2];
+                        model.Organizacja = (string)reader[3];
+                        model.Data_certyfikatu = DateTime.Parse((string)reader[4]);
+                        model.Kod_certyfikatu = reader[5].ToString();
+                        model.Zatwierdzony = (int)reader[6];
+
+                        list.Add(model);
+                    }
+
+                    reader.Close();
+                    Connection.Close();
+                }
+                catch (Exception ex)
+                { }
+            }
+
+            return list;
+        }
+
+        // Admin
+        public static List<CertyfikatModel> GetWgType(int statusWeryfikaci)
+        {
+            List<CertyfikatModel> list = new List<CertyfikatModel>();
+
+            using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+            {
+                try
+                {
+                    Connection.Open();
+
+                    SqlCommand command = new SqlCommand($"Select * from Certyfikat WHERE zatwierdzony = {statusWeryfikaci}", Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        CertyfikatModel model = new CertyfikatModel();
+
+                        model.Id = (int)reader[0];
+                        model.Id_trenera = (int)reader[1];
+                        model.Nazwa = (string)reader[2];
+                        model.Organizacja = (string)reader[3];
+                        model.Data_certyfikatu = DateTime.Parse((string)reader[4]);
                         model.Kod_certyfikatu = reader[5].ToString();
                         model.Zatwierdzony = (int)reader[6];
 

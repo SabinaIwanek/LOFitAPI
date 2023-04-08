@@ -22,7 +22,7 @@
             Nazwisko = trenerModel.Nazwisko;
             Plec = trenerModel.Plec;
             Data_urodzenia = trenerModel?.Data_urodzenia;
-            Nr_telefonu = trenerModel.Nr_telefonu;
+            Nr_telefonu = trenerModel?.Nr_telefonu;
         }
     }
 }

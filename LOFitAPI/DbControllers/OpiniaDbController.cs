@@ -4,7 +4,7 @@ using Microsoft.Data.SqlClient;
 
 namespace LOFitAPI.DbControllers
 {
-    public class OpiniaDbController
+    public static class OpiniaDbController
     {
         public static string Add(OpiniaModel model)
         {
@@ -36,7 +36,7 @@ namespace LOFitAPI.DbControllers
                 try
                 {
                     Connection.Open();
-                    string query = $"UPDATE Certyfikat SET id_usera={model.Id_usera},id_trenera={model.Id_trenera}, opis={SqlTools.ReturnString(model.Opis)},ocena={model.Ocena}, zgloszona{model.Zgloszona},opis_zgloszenia{SqlTools.ReturnString(model.Opis_zgloszenia)} WHERE id = {SqlTools.ReturnString(model.Id)}";
+                    string query = $"UPDATE Opinia SET id_usera={model.Id_usera},id_trenera={model.Id_trenera}, opis={SqlTools.ReturnString(model.Opis)},ocena={model.Ocena}, zgloszona={model.Zgloszona},opis_zgloszenia={SqlTools.ReturnString(model.Opis_zgloszenia)} WHERE id = {SqlTools.ReturnString(model.Id)}";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
@@ -96,9 +96,9 @@ namespace LOFitAPI.DbControllers
                         model.Id_usera = (int)reader[1];
                         model.Id_trenera = (int)reader[2];
                         try { model.Opis = reader[3].ToString(); } catch { model.Opis = null; }
-                        model.Ocena = (int)reader[1];
-                        model.Zgloszona = (int)reader[2];
-                        try { model.Opis_zgloszenia = reader[3].ToString(); } catch { model.Opis_zgloszenia = null; }
+                        model.Ocena = (int)reader[4];
+                        model.Zgloszona = (int)reader[5];
+                        model.Opis_zgloszenia = (string)reader[6];
                     }
 
                     reader.Close();
@@ -131,9 +131,9 @@ namespace LOFitAPI.DbControllers
                         model.Id_usera = (int)reader[1];
                         model.Id_trenera = (int)reader[2];
                         try { model.Opis = reader[3].ToString(); } catch { model.Opis = null; }
-                        model.Ocena = (int)reader[1];
-                        model.Zgloszona = (int)reader[2];
-                        try { model.Opis_zgloszenia = reader[3].ToString(); } catch { model.Opis_zgloszenia = null; }
+                        model.Ocena = (int)reader[4];
+                        model.Zgloszona = (int)reader[5];
+                        model.Opis_zgloszenia = (string)reader[6];
 
                         list.Add(model);
                     }
@@ -168,9 +168,9 @@ namespace LOFitAPI.DbControllers
                         model.Id_usera = (int)reader[1];
                         model.Id_trenera = (int)reader[2];
                         try { model.Opis = reader[3].ToString(); } catch { model.Opis = null; }
-                        model.Ocena = (int)reader[1];
-                        model.Zgloszona = (int)reader[2];
-                        try { model.Opis_zgloszenia = reader[3].ToString(); } catch { model.Opis_zgloszenia = null; }
+                        model.Ocena = (int)reader[4];
+                        model.Zgloszona = (int)reader[5];
+                        model.Opis_zgloszenia = (string)reader[6];
 
                         list.Add(model);
                     }
@@ -183,6 +183,69 @@ namespace LOFitAPI.DbControllers
             }
 
             return list;
+        }
+       
+        // Admin
+        public static List<OpiniaModel> GetWgType(int statusWeryfikacji)
+        {
+            List<OpiniaModel> list = new List<OpiniaModel>();
+
+            using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+            {
+                try
+                {
+                    Connection.Open();
+
+                    SqlCommand command = new SqlCommand($"Select * from Opinia WHERE zgloszona = {statusWeryfikacji}", Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        OpiniaModel model = new OpiniaModel();
+
+                        model.Id = (int)reader[0];
+                        model.Id_usera = (int)reader[1];
+                        model.Id_trenera = (int)reader[2];
+                        try { model.Opis = reader[3].ToString(); } catch { model.Opis = null; }
+                        model.Ocena = (int)reader[4];
+                        model.Zgloszona = (int)reader[5];
+                        model.Opis_zgloszenia = (string)reader[6];
+
+                        list.Add(model);
+                    }
+
+                    reader.Close();
+                    Connection.Close();
+                }
+                catch (Exception ex)
+                { }
+            }
+
+            return list;
+        }
+        public static string ResetState(int id)
+        {
+            try
+            {
+                using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+                {
+                    Connection.Open();
+
+                    string query = $"UPDATE Opinia SET zgloszona=0,opis_zgloszenia='' WHERE id = {id}";
+
+                    SqlCommand command = new SqlCommand(query, Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    reader.Close();
+                    Connection.Close();
+                }
+
+                return "Ok";
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
         }
     }
 }

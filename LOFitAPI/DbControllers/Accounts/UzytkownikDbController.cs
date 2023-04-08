@@ -15,7 +15,7 @@ namespace LOFitAPI.DbControllers.Accounts
                 {
                     Connection.Open();
                     //Utworzenie Użytkownika
-                    string query = $"INSERT INTO Uzytkownik VALUES('{form.Imie}', {SqlTools.ReturnString(form.Nazwisko)}), {form.Plec}, {SqlTools.ReturnDate(form.Data_urodzenia)}, NULL, NULL, {SqlTools.ReturnInt(form.Nr_telefonu)},{SqlTools.ReturnDateTime(DateTime.Now)}";
+                    string query = $"INSERT INTO Uzytkownik VALUES('{form.Imie}', {SqlTools.ReturnString(form.Nazwisko)}, {form.Plec}, {SqlTools.ReturnDate(form.Data_urodzenia)}, NULL, NULL, {SqlTools.ReturnInt(form.Nr_telefonu)},{SqlTools.ReturnDateTime(DateTime.Now)})";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
@@ -38,7 +38,7 @@ namespace LOFitAPI.DbControllers.Accounts
                     reader2.Close();
 
                     //Utworzenie konta
-                    string query3 = $"INSERT INTO Konto VALUES ('{form.Email}','{form.Haslo}',{1},{id}, NULL,NULL)";
+                    string query3 = $"INSERT INTO Konto VALUES ('{form.Email}','{form.Haslo}',{1},{0},{id}, NULL,NULL)";
 
                     SqlCommand command3 = new SqlCommand(query3, Connection);
                     SqlDataReader reader3 = command3.ExecuteReader();
@@ -95,7 +95,7 @@ namespace LOFitAPI.DbControllers.Accounts
                     while (reader.Read())
                     {
                         model.Id = (int)reader[0];
-                        model.Imie = reader[1].ToString();
+                        model.Imie = (string)reader[1];
                         try { model.Nazwisko = reader[2].ToString(); } catch { model.Nazwisko = null; }
                         model.Plec = (int)reader[3];
                         try { model.Data_urodzenia = (DateTime)reader[4]; } catch { model.Data_urodzenia = null; }
@@ -114,6 +114,46 @@ namespace LOFitAPI.DbControllers.Accounts
             }
 
             return model;
+        }
+        public static List<UzytkownikModel> GetAll()
+        {
+            List<UzytkownikModel> list = new List<UzytkownikModel>();
+
+            try
+            {
+                using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+                {
+                    Connection.Open();
+
+                    SqlCommand command = new SqlCommand($"SELECT * FROM Uzytkownik", Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        UzytkownikModel model = new UzytkownikModel();
+
+                        model.Id = (int)reader[0];
+                        model.Imie = (string)reader[1];
+                        try { model.Nazwisko = reader[2].ToString(); } catch { model.Nazwisko = null; }
+                        model.Plec = (int)reader[3];
+                        try { model.Data_urodzenia = (DateTime)reader[4]; } catch { model.Data_urodzenia = null; }
+                        try { model.Id_trenera = (int)reader[5]; } catch { model.Id_trenera = null; }
+                        try { model.Id_dietetyka = (int)reader[6]; } catch { model.Id_dietetyka = null; }
+                        try { model.Nr_telefonu = (int)reader[7]; } catch { model.Nr_telefonu = null; }
+
+                        list.Add(model);
+                    }
+
+                    reader.Close();
+                    Connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+            return list;
         }
     }
 }

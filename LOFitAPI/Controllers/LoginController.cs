@@ -27,6 +27,7 @@ namespace LOFitAPI.Controllers
 
             int accountType = KontoDbController.IsOkLogin(form);
             if (accountType == 4) return Unauthorized();
+            if (accountType == 5) return Forbid();
 
             var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["Authentication:SecretForKey"]));
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

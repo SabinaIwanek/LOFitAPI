@@ -4,7 +4,7 @@ using Microsoft.Data.SqlClient;
 
 namespace LOFitAPI.DbControllers
 {
-    public class PowiazanieDbController
+    public static class PowiazanieDbController
     {
         public static string Add(PowiazanieModel model)
         {
@@ -87,7 +87,7 @@ namespace LOFitAPI.DbControllers
                 {
                     Connection.Open();
 
-                    SqlCommand command = new SqlCommand($"Select * from Powiazania WHERE id_usera = {id_usera}", Connection);
+                    SqlCommand command = new SqlCommand($"Select * from Powiazanie WHERE id_usera = {id_usera}", Connection);
                     SqlDataReader reader = command.ExecuteReader();
 
                     while (reader.Read())
@@ -95,11 +95,11 @@ namespace LOFitAPI.DbControllers
                         model.Id = (int)reader[0];
                         model.Id_trenera = (int)reader[1];
                         model.Id_usera = (int)reader[2];
-                        model.Czas_od = DateTime.Parse(reader[3].ToString());
-                        model.Czas_do = DateTime.Parse(reader[4].ToString());
+                        model.Czas_od = DateTime.Parse((string)reader[3]);
+                        model.Czas_do = DateTime.Parse((string)reader[4]);
                         model.Zatwierdzone = (int)reader[5];
                         model.Podglad_pelny = (int)reader[6];
-                        model.Podglad_od_daty = DateTime.Parse(reader[7].ToString());
+                        model.Podglad_od_daty = DateTime.Parse((string)reader[7]);
                     }
 
                     reader.Close();
@@ -121,7 +121,7 @@ namespace LOFitAPI.DbControllers
                 {
                     Connection.Open();
 
-                    SqlCommand command = new SqlCommand($"Select * from Powiazania WHERE id_trenera = {id_trenera}", Connection);
+                    SqlCommand command = new SqlCommand($"Select * from Powiazanie WHERE id_trenera = {id_trenera}", Connection);
                     SqlDataReader reader = command.ExecuteReader();
 
                     while (reader.Read())
@@ -129,11 +129,11 @@ namespace LOFitAPI.DbControllers
                         model.Id = (int)reader[0];
                         model.Id_trenera = (int)reader[1];
                         model.Id_usera = (int)reader[2];
-                        model.Czas_od = DateTime.Parse(reader[3].ToString());
-                        model.Czas_do = DateTime.Parse(reader[4].ToString());
+                        model.Czas_od = DateTime.Parse((string)reader[3]);
+                        model.Czas_do = DateTime.Parse((string)reader[4]);
                         model.Zatwierdzone = (int)reader[5];
                         model.Podglad_pelny = (int)reader[6];
-                        model.Podglad_od_daty = DateTime.Parse(reader[7].ToString());
+                        model.Podglad_od_daty = DateTime.Parse((string)reader[7]);
                     }
 
                     reader.Close();
