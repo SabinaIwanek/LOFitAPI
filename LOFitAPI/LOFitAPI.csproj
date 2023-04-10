@@ -20,4 +20,10 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.26.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DbModels\Accounts\" />
+    <Folder Include="DbModels\Menu\" />
+    <Folder Include="DbModels\ProfileMenu\" />
+  </ItemGroup>
+
 </Project>

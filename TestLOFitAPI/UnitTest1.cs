@@ -1,7 +1,7 @@
 using FluentAssertions;
 using LOFitAPI.Controllers.PostModels.Login;
 using LOFitAPI.DbControllers.Accounts;
-using LOFitAPI.DbModels;
+using LOFitAPI.DbModels.Accounts;
 using LOFitAPI.Tools;
 
 namespace TestLOFitAPI

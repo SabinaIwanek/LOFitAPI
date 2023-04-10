@@ -1,5 +1,5 @@
 ﻿using LOFitAPI.Controllers.PostModels.Registration;
-using LOFitAPI.DbModels;
+using LOFitAPI.DbModels.Accounts;
 using LOFitAPI.Tools;
 using Microsoft.Data.SqlClient;
 

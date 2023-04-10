@@ -1,4 +1,4 @@
-﻿using LOFitAPI.DbModels;
+﻿using LOFitAPI.DbModels.Menu;
 
 namespace LOFitAPI.Tools
 {

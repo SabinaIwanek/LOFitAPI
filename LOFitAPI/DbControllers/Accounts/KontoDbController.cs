@@ -1,6 +1,6 @@
 ﻿using LOFitAPI.Controllers.GetModel;
 using LOFitAPI.Controllers.PostModels.Login;
-using LOFitAPI.DbModels;
+using LOFitAPI.DbModels.Accounts;
 using LOFitAPI.Enums;
 using LOFitAPI.Tools;
 using Microsoft.Data.SqlClient;
