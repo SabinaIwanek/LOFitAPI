@@ -1,5 +1,5 @@
 ﻿using LOFitAPI.DbControllers.Accounts;
-using LOFitAPI.DbModels;
+using LOFitAPI.DbModels.ProfileMenu;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using LOFitAPI.DbControllers.ProffileMenu;

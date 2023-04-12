@@ -58,7 +58,7 @@ namespace LOFitAPI.DbControllers.Accounts
 
                 while (reader.Read())
                 {
-                    if ((DateTime)reader[6] >= DateTime.Now)
+                    if ((DateTime)reader[7] >= DateTime.Now)
                         userId = (int)reader[0];
                 }
 
@@ -79,7 +79,7 @@ namespace LOFitAPI.DbControllers.Accounts
         }
         public static bool SendForgottenCode(string email)
         {
-            int? userId = ReturnUserId(email);
+            int? userId = ReturnKontoId(email);
 
             if (userId == null) return false;
 
@@ -106,7 +106,31 @@ namespace LOFitAPI.DbControllers.Accounts
         }
         public static int? ReturnUserId(string? email)
         {
-            if(email == null) return null;
+            if (email == null) return null;
+
+            int? userId = null;
+
+            using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+            {
+                Connection.Open();
+
+                SqlCommand command = new SqlCommand($"SELECT * FROM Konto WHERE email = '{email}'", Connection);
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    userId = (int)reader[5];
+                }
+
+                reader.Close();
+                Connection.Close();
+            }
+
+            return userId;
+        }
+        public static int? ReturnKontoId(string email)
+        {
+            if (email == null) return null;
 
             int? userId = null;
 

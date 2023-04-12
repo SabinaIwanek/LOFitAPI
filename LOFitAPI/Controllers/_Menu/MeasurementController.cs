@@ -1,6 +1,6 @@
 ﻿using LOFitAPI.DbControllers.Accounts;
 using LOFitAPI.DbControllers.Menu;
-using LOFitAPI.DbModels;
+using LOFitAPI.DbModels.Menu;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

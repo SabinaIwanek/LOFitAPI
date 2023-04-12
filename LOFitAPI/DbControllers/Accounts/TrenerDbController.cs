@@ -85,30 +85,6 @@ namespace LOFitAPI.DbControllers.Accounts
                 return ex.ToString();
             }
         }
-        public static string SetState(int id, int state)
-        {
-            try
-            {
-                using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
-                {
-                    Connection.Open();
-
-                    string query = $"UPDATE Trener SET zatwierdzony_dietetyk={state},zatwierdzony_trener={state} WHERE id = {id}";
-
-                    SqlCommand command = new SqlCommand(query, Connection);
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    reader.Close();
-                    Connection.Close();
-                }
-
-                return "Ok";
-            }
-            catch (Exception ex)
-            {
-                return ex.ToString();
-            }
-        }
         public static List<TrenerModel> GetAll()
         {
             List<TrenerModel> list = new List<TrenerModel>();
@@ -242,6 +218,30 @@ namespace LOFitAPI.DbControllers.Accounts
                 return null;
             }
             return list;
+        }
+        public static string SetState(int id, int state)
+        {
+            try
+            {
+                using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+                {
+                    Connection.Open();
+
+                    string query = $"UPDATE Trener SET zatwierdzony_dietetyk={state},zatwierdzony_trener={state} WHERE id = {id}";
+
+                    SqlCommand command = new SqlCommand(query, Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    reader.Close();
+                    Connection.Close();
+                }
+
+                return "Ok";
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
         }
     }
 }

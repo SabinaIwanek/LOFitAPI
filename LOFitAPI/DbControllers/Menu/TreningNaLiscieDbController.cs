@@ -1,4 +1,4 @@
-﻿using LOFitAPI.DbModels;
+﻿using LOFitAPI.DbModels.Menu;
 using LOFitAPI.Tools;
 using Microsoft.Data.SqlClient;
 

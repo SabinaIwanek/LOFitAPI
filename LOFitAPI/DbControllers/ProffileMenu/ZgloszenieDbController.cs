@@ -1,4 +1,4 @@
-﻿using LOFitAPI.DbModels;
+﻿using LOFitAPI.DbModels.ProfileMenu;
 using Microsoft.Data.SqlClient;
 
 namespace LOFitAPI.DbControllers.ProffileMenu
