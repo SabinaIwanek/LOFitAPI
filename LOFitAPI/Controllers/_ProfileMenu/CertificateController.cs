@@ -12,7 +12,7 @@ namespace LOFitAPI.Controllers._ProfileMenu
     public class CertificateController : ControllerBase
     {
         [HttpPost]
-        public ActionResult<int> Add(CertyfikatModel model)
+        public ActionResult<string> Add(CertyfikatModel model)
         {
             int? idUsera = KontoDbController.ReturnUserId(User.Identity?.Name);
 

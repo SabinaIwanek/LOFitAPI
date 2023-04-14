@@ -35,6 +35,15 @@ namespace LOFitAPI.Controllers._ProfileMenu
             return Ok(answer);
         }
 
+        [HttpDelete]
+        [Route("{id}")]
+        public ActionResult<string> Delete(int id)
+        {
+            string answer = PowiazanieDbController.Delete(id);
+
+            return Ok(answer);
+        }
+
         [HttpGet]
         [Route("coachList/{id}")]
         public ActionResult<List<PowiazanieModel>> GetCoachList(int id)
@@ -58,9 +67,34 @@ namespace LOFitAPI.Controllers._ProfileMenu
         [Route("userList/{id}")]
         public ActionResult<List<PowiazanieModel>> GetUserList(int id)
         {
+            if (id == -1)
+            {
+                int? idUser = KontoDbController.ReturnUserId(User?.Identity?.Name);
+
+                if (idUser == null)
+                    return Unauthorized();
+
+                id = (int)idUser;
+            }
+
             List<PowiazanieModel> model = PowiazanieDbController.GetListUser(id);
 
             return Ok(model);
+        }
+
+        [HttpGet]
+        [Route("coachstate/{id}")]
+        public ActionResult<int> GetCoachState(int id)
+        {
+            int? idUser = KontoDbController.ReturnUserId(User?.Identity?.Name);
+
+            if (idUser == null)
+                return Unauthorized();
+
+
+            int type = PowiazanieDbController.GetCoachState(id, (int)idUser);
+
+            return Ok(type);
         }
     }
 }

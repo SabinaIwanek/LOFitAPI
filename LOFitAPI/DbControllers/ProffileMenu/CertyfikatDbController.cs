@@ -120,7 +120,7 @@ namespace LOFitAPI.DbControllers.ProffileMenu
                         model.Id_trenera = (int)reader[1];
                         model.Nazwa = (string)reader[2];
                         model.Organizacja = (string)reader[3];
-                        model.Data_certyfikatu = DateTime.Parse((string)reader[4]);
+                        model.Data_certyfikatu = (DateTime)reader[4];
                         model.Kod_certyfikatu = reader[5].ToString();
                         model.Zatwierdzony = (int)reader[6];
                     }
@@ -155,7 +155,7 @@ namespace LOFitAPI.DbControllers.ProffileMenu
                         model.Id_trenera = (int)reader[1];
                         model.Nazwa = (string)reader[2];
                         model.Organizacja = (string)reader[3];
-                        model.Data_certyfikatu = DateTime.Parse(reader[4].ToString());
+                        model.Data_certyfikatu = (DateTime)reader[4];
                         model.Kod_certyfikatu = reader[5].ToString();
                         model.Zatwierdzony = (int)reader[6];
 
@@ -192,7 +192,7 @@ namespace LOFitAPI.DbControllers.ProffileMenu
                         model.Id_trenera = (int)reader[1];
                         model.Nazwa = (string)reader[2];
                         model.Organizacja = (string)reader[3];
-                        model.Data_certyfikatu = DateTime.Parse((string)reader[4]);
+                        model.Data_certyfikatu = (DateTime)reader[4];
                         model.Kod_certyfikatu = reader[5].ToString();
                         model.Zatwierdzony = (int)reader[6];
 
@@ -231,7 +231,7 @@ namespace LOFitAPI.DbControllers.ProffileMenu
                         model.Id_trenera = (int)reader[1];
                         model.Nazwa = (string)reader[2];
                         model.Organizacja = (string)reader[3];
-                        model.Data_certyfikatu = DateTime.Parse((string)reader[4]);
+                        model.Data_certyfikatu = (DateTime)reader[4];
                         model.Kod_certyfikatu = reader[5].ToString();
                         model.Zatwierdzony = (int)reader[6];
 

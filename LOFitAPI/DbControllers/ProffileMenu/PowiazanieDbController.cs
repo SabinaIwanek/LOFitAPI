@@ -53,6 +53,31 @@ namespace LOFitAPI.DbControllers.ProffileMenu
 
             return "Ok";
         }
+        public static string Delete(int id)
+        {
+            try
+            {
+                using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+                {
+                    Connection.Open();
+                    //Utworzenie Użytkownika
+                    string query = $"DELETE FROM Powiazanie WHERE id={id};";
+
+                    SqlCommand command = new SqlCommand(query, Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    reader.Close();
+                    Connection.Close();
+
+                }
+
+                return "Ok";
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+        }
         public static List<PowiazanieModel> GetListUser(int id_usera)
         {
             List<PowiazanieModel> list = new List<PowiazanieModel>();
@@ -73,10 +98,10 @@ namespace LOFitAPI.DbControllers.ProffileMenu
                         model.Id = (int)reader[0];
                         model.Id_trenera = (int)reader[1];
                         model.Id_usera = (int)reader[2];
-                        model.Czas_od = DateTime.Parse((string)reader[3]);
-                        model.Czas_do = DateTime.Parse((string)reader[4]);
+                        model.Czas_od = (DateTime)reader[3];
+                        try { model.Czas_do = (DateTime)reader[4]; } catch { model.Czas_do = null; };
                         model.Zatwierdzone = (int)reader[5];
-                        model.Podglad_od_daty = DateTime.Parse((string)reader[6]);
+                        try { model.Czas_do = (DateTime)reader[6]; } catch { model.Czas_do = null; };
 
                         list.Add(model);
                     }
@@ -110,10 +135,10 @@ namespace LOFitAPI.DbControllers.ProffileMenu
                         model.Id = (int)reader[0];
                         model.Id_trenera = (int)reader[1];
                         model.Id_usera = (int)reader[2];
-                        model.Czas_od = DateTime.Parse((string)reader[3]);
-                        model.Czas_do = DateTime.Parse((string)reader[4]);
+                        model.Czas_od = (DateTime)reader[3];
+                        try { model.Czas_do = (DateTime)reader[4]; } catch { model.Czas_do = null; };
                         model.Zatwierdzone = (int)reader[5];
-                        model.Podglad_od_daty = DateTime.Parse((string)reader[6]);
+                        try { model.Czas_do = (DateTime)reader[6]; } catch { model.Czas_do = null; };
 
                         list.Add(model);
                     }
@@ -126,6 +151,34 @@ namespace LOFitAPI.DbControllers.ProffileMenu
             }
 
             return list;
+        }
+        public static int GetCoachState(int id_trenera, int id_usera)
+        {
+            int type = 3;
+
+            using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+            {
+                try
+                {
+                    Connection.Open();
+
+                    SqlCommand command = new SqlCommand($"Select * from Powiazanie WHERE id_trenera = {id_trenera} AND id_usera = {id_usera}", Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        if (Convert.IsDBNull(reader[6]) || (DateTime)reader[6] >= DateTime.Now)
+                            type = (int)reader[5];
+                    }
+
+                    reader.Close();
+                    Connection.Close();
+                }
+                catch (Exception ex)
+                { }
+            }
+
+            return type;
         }
     }
 }

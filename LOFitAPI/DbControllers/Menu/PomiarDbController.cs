@@ -70,7 +70,7 @@ namespace LOFitAPI.DbControllers.Menu
                     {
                         model.Id = (int)reader[0];
                         model.Id_usera = (int)reader[1];
-                        model.Data_pomiaru = DateTime.Parse((string)reader[2]);
+                        model.Data_pomiaru = (DateTime)reader[2];
                         try { model.Waga = (decimal)reader[3]; } catch { model.Waga = null; }
                         try { model.Procent_tluszczu = (decimal)reader[4]; } catch { model.Procent_tluszczu = null; }
                         try { model.Biceps = (decimal)reader[5]; } catch { model.Biceps = null; }
@@ -112,7 +112,7 @@ namespace LOFitAPI.DbControllers.Menu
 
                         model.Id = (int)reader[0];
                         model.Id_usera = (int)reader[1];
-                        model.Data_pomiaru = DateTime.Parse((string)reader[2]);
+                        model.Data_pomiaru = (DateTime)reader[2];
                         try { model.Waga = (decimal)reader[3]; } catch { model.Waga = null; }
                         try { model.Procent_tluszczu = (decimal)reader[4]; } catch { model.Procent_tluszczu = null; }
                         try { model.Biceps = (decimal)reader[5]; } catch { model.Biceps = null; }
