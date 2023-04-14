@@ -68,7 +68,7 @@ namespace LOFitAPI.DbControllers.Accounts
                 {
                     Connection.Open();
                     //Utworzenie Użytkownika
-                    string query = $"UPDATE Trener SET imie ={form.Imie}, nazwisko={SqlTools.ReturnString(form.Nazwisko)}, plec={form.Plec}, data_urodzenia={SqlTools.ReturnDate(form.Data_urodzenia)}, nr_telefonu={SqlTools.ReturnInt(form.Nr_telefonu)}, opis_profilu={SqlTools.ReturnString(form.Opis_profilu)}, miejscowosc={SqlTools.ReturnString(form.Miejscowosc)}, cena_trening={SqlTools.ReturnDecimal(form.Cena_trening)},czas_trening_min={SqlTools.ReturnInt(form.Czas_trening_min)}, cena_dieta={SqlTools.ReturnDecimal(form.Cena_dieta)},czas_dieta_min={SqlTools.ReturnInt(form.Czas_dieta_min)},zatwierdzony_dietetyk={form.Zatwierdzony_dietetyk},zatwierdzony_trener={form.Zatwierdzony_trener} WHERE id = {SqlTools.ReturnString(form.Id)}";
+                    string query = $"UPDATE Trener SET imie ='{form.Imie}', nazwisko={SqlTools.ReturnString(form.Nazwisko)}, plec={form.Plec}, data_urodzenia={SqlTools.ReturnDate(form.Data_urodzenia)}, nr_telefonu={SqlTools.ReturnInt(form.Nr_telefonu)}, opis_profilu={SqlTools.ReturnString(form.Opis_profilu)}, miejscowosc={SqlTools.ReturnString(form.Miejscowosc)}, cena_trening={SqlTools.ReturnDecimal(form.Cena_trening)},czas_trening_min={SqlTools.ReturnInt(form.Czas_trening_min)}, cena_dieta={SqlTools.ReturnDecimal(form.Cena_dieta)},czas_dieta_min={SqlTools.ReturnInt(form.Czas_dieta_min)},zatwierdzony_dietetyk={form.Zatwierdzony_dietetyk},zatwierdzony_trener={form.Zatwierdzony_trener} WHERE id = {SqlTools.ReturnString(form.Id)}";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();

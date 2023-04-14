@@ -78,6 +78,39 @@ namespace LOFitAPI.DbControllers.ProffileMenu
                 return ex.ToString();
             }
         }
+        public static PowiazanieModel GetOne(int id)
+        {
+            PowiazanieModel model = new PowiazanieModel();
+
+            using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+            {
+                try
+                {
+                    Connection.Open();
+
+                    SqlCommand command = new SqlCommand($"Select * from Powiazanie WHERE id = {id}", Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        model.Id = (int)reader[0];
+                        model.Id_trenera = (int)reader[1];
+                        model.Id_usera = (int)reader[2];
+                        model.Czas_od = (DateTime)reader[3];
+                        try { model.Czas_do = (DateTime)reader[4]; } catch { model.Czas_do = null; };
+                        model.Zatwierdzone = (int)reader[5];
+                        try { model.Czas_do = (DateTime)reader[6]; } catch { model.Czas_do = null; };
+                    }
+
+                    reader.Close();
+                    Connection.Close();
+                }
+                catch (Exception ex)
+                { }
+            }
+
+            return model;
+        }
         public static List<PowiazanieModel> GetListUser(int id_usera)
         {
             List<PowiazanieModel> list = new List<PowiazanieModel>();

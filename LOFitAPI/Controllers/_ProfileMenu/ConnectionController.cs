@@ -58,7 +58,7 @@ namespace LOFitAPI.Controllers._ProfileMenu
                 id = (int)idCoach;
             }
 
-            List<PowiazanieModel> model = PowiazanieDbController.GetListUser(id);
+            List<PowiazanieModel> model = PowiazanieDbController.GetListTrener(id);
 
             return Ok(model);
         }
@@ -95,6 +95,30 @@ namespace LOFitAPI.Controllers._ProfileMenu
             int type = PowiazanieDbController.GetCoachState(id, (int)idUser);
 
             return Ok(type);
+        }
+
+        [HttpGet]
+        [Route("updatestateok/{id}")]
+        public ActionResult<string> UpdateStateOk(int id)
+        {
+            PowiazanieModel model = PowiazanieDbController.GetOne(id);
+            model.Zatwierdzone = 1;
+
+            string answer =  PowiazanieDbController.Update(model);
+
+            return Ok(answer);
+        }
+
+        [HttpGet]
+        [Route("updatestateno/{id}")]
+        public ActionResult<int> UpdateStateNo(int id)
+        {
+            PowiazanieModel model = PowiazanieDbController.GetOne(id);
+            model.Zatwierdzone = 2;
+
+            string answer = PowiazanieDbController.Update(model);
+
+            return Ok(answer);
         }
     }
 }
