@@ -41,6 +41,16 @@ namespace LOFitAPI.Controllers._Menu
 
             return Ok(measurements);
         }
+        [HttpGet]
+        [Route("week/{dateString}/{idUsera}")]
+        public ActionResult<List<PomiarModel>> GetWeekById(string dateString, int idUsera)
+        {
+            DateTime date = DateTime.Parse(dateString);
+
+            List<PomiarModel> measurements = PomiarDbController.GetWeek(date, idUsera);
+
+            return Ok(measurements);
+        }
         [HttpPost]
         public ActionResult<string> Add(PomiarModel measurement)
         {
