@@ -14,12 +14,15 @@ namespace LOFitAPI.Controllers._Menu
         [HttpPost]
         public ActionResult<string> Add(ProduktNaLiscieModel product)
         {
-            int? idUsera = KontoDbController.ReturnUserId(User.Identity?.Name);
+            if(product.Id_usera == -1)
+            {
+                int? idUsera = KontoDbController.ReturnUserId(User.Identity?.Name);
 
-            if (idUsera == null)
-                return Unauthorized();
+                if (idUsera == null)
+                    return Unauthorized();
 
-            product.Id_usera = (int)idUsera;
+                product.Id_usera = (int)idUsera;
+            }
 
             string answer = ProduktNaLiscieDbController.Add(product);
 
@@ -29,13 +32,6 @@ namespace LOFitAPI.Controllers._Menu
         [HttpPut]
         public ActionResult<string> Update(ProduktNaLiscieModel product)
         {
-            int? idUsera = KontoDbController.ReturnUserId(User.Identity?.Name);
-
-            if (idUsera == null)
-                return Unauthorized();
-
-            product.Id_usera = (int)idUsera;
-
             string answer = ProduktNaLiscieDbController.Update(product);
 
             return Ok(answer);
@@ -60,17 +56,22 @@ namespace LOFitAPI.Controllers._Menu
         }
 
         [HttpGet]
-        [Route("userlist/{dateString}")]
-        public ActionResult<List<ProduktNaLiscieModel>> GetUserList(string dateString)
+        [Route("userlist/{dateString}/{idUsera}")]
+        public ActionResult<List<ProduktNaLiscieModel>> GetUserList(string dateString, int idUsera)
         {
             DateTime date = DateTime.Parse(dateString);
+            
+            if(idUsera == -1)
+            {
+                int? id = KontoDbController.ReturnUserId(User?.Identity?.Name);
 
-            int? idUsera = KontoDbController.ReturnUserId(User?.Identity?.Name);
+                if (id == null)
+                    return Unauthorized();
 
-            if (idUsera == null)
-                return Unauthorized();
+                idUsera = (int)id;
+            }
 
-            List<ProduktNaLiscieModel> list = ProduktNaLiscieDbController.GetUserList((int)idUsera, date);
+            List<ProduktNaLiscieModel> list = ProduktNaLiscieDbController.GetUserList(idUsera, date);
 
             return Ok(list);
         }

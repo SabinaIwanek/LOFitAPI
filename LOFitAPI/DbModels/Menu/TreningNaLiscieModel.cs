@@ -7,6 +7,7 @@
         public int? Id_trenera { get; set; }
         public int Id_treningu { get; set; }
         public DateTime? Czas { get; set; }
+        public int? Kcla { get; set; }
         public DateTime Data_czas { get; set; }
         public bool Zatwierdzony { get; set; }
         public TreningModel Trening { get; set; }

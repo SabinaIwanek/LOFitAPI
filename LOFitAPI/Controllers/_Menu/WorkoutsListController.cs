@@ -14,13 +14,16 @@ namespace LOFitAPI.Controllers._Menu
         [HttpPost]
         public ActionResult<string> Add(TreningNaLiscieModel trening)
         {
-            int? idUsera = KontoDbController.ReturnUserId(User.Identity?.Name);
+            if(trening.Id_usera == -1)
+            {
+                int? idUsera = KontoDbController.ReturnUserId(User.Identity?.Name);
 
-            if (idUsera == null)
-                return Unauthorized();
+                if (idUsera == null)
+                    return Unauthorized();
 
-            trening.Id_usera = (int)idUsera;
-
+                trening.Id_usera = (int)idUsera;
+            }
+            
             string answer = TreningNaLiscieDbController.Add(trening);
 
             return Ok(answer);
@@ -29,12 +32,15 @@ namespace LOFitAPI.Controllers._Menu
         [HttpPut]
         public ActionResult<string> Update(TreningNaLiscieModel trening)
         {
-            int? idUsera = KontoDbController.ReturnUserId(User.Identity?.Name);
+            if(trening.Id_usera == -1)
+            {
+                int? idUsera = KontoDbController.ReturnUserId(User.Identity?.Name);
 
-            if (idUsera == null)
-                return Unauthorized();
+                if (idUsera == null)
+                    return Unauthorized();
 
-            trening.Id_usera = (int)idUsera;
+                trening.Id_usera = (int)idUsera;
+            }
 
             string answer = TreningNaLiscieDbController.Update(trening);
 
@@ -60,17 +66,22 @@ namespace LOFitAPI.Controllers._Menu
         }
 
         [HttpGet]
-        [Route("userlist/{dateString}")]
-        public ActionResult<List<TreningNaLiscieModel>> GetUserList(string dateString)
+        [Route("userlist/{dateString}/{idUsera}")]
+        public ActionResult<List<TreningNaLiscieModel>> GetUserList(string dateString, int idUsera)
         {
             DateTime date = DateTime.Parse(dateString);
 
-            int? idUsera = KontoDbController.ReturnUserId(User?.Identity?.Name);
+            if(idUsera == -1)
+            {
+                int? id = KontoDbController.ReturnUserId(User?.Identity?.Name);
 
-            if (idUsera == null)
-                return Unauthorized();
+                if (id == null)
+                    return Unauthorized();
 
-            List<TreningNaLiscieModel> list = TreningNaLiscieDbController.GetUserList((int)idUsera, date);
+                idUsera = (int)id;
+            }
+
+            List<TreningNaLiscieModel> list = TreningNaLiscieDbController.GetUserList(idUsera, date);
 
             return Ok(list);
         }

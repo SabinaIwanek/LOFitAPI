@@ -3,6 +3,7 @@ using LOFitAPI.DbControllers.Menu;
 using LOFitAPI.DbModels.Menu;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.Metrics;
 
 namespace LOFitAPI.Controllers._Menu
 {
@@ -26,26 +27,22 @@ namespace LOFitAPI.Controllers._Menu
 
             return Ok(measurement);
         }
-        [HttpGet]
-        [Route("week/{dateString}")]
-        public ActionResult<List<PomiarModel>> GetWeek(string dateString)
-        {
-            DateTime date = DateTime.Parse(dateString);
-
-            int? idUsera = KontoDbController.ReturnUserId(User?.Identity?.Name);
-
-            if (idUsera == null)
-                return Unauthorized();
-
-            List<PomiarModel> measurements = PomiarDbController.GetWeek(date, (int)idUsera);
-
-            return Ok(measurements);
-        }
+        
         [HttpGet]
         [Route("week/{dateString}/{idUsera}")]
         public ActionResult<List<PomiarModel>> GetWeekById(string dateString, int idUsera)
         {
             DateTime date = DateTime.Parse(dateString);
+
+            if(idUsera == -1)
+            {
+                int? id = KontoDbController.ReturnUserId(User.Identity?.Name);
+
+                if (id == null)
+                    return Unauthorized();
+
+                idUsera = (int)id;
+            }
 
             List<PomiarModel> measurements = PomiarDbController.GetWeek(date, idUsera);
 
