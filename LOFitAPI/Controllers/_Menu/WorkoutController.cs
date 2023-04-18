@@ -14,12 +14,12 @@ namespace LOFitAPI.Controllers._Menu
         [HttpPost]
         public ActionResult<int> Add(TreningModel trening)
         {
-            int? idUsera = KontoDbController.ReturnUserId(User.Identity?.Name);
+            int? idKonta = KontoDbController.ReturnKontoId(User.Identity?.Name);
 
-            if (idUsera == null)
+            if (idKonta == null)
                 return Unauthorized();
 
-            trening.Id_usera = (int)idUsera;
+            trening.Id_konta = (int)idKonta;
 
             int answer = TreningDbController.Add(trening);
 
@@ -47,12 +47,12 @@ namespace LOFitAPI.Controllers._Menu
         [Route("userList")]
         public ActionResult<List<TreningModel>> GetUserList()
         {
-            int? idUsera = KontoDbController.ReturnUserId(User?.Identity?.Name);
+            int? idKonta = KontoDbController.ReturnKontoId(User?.Identity?.Name);
 
-            if (idUsera == null)
+            if (idKonta == null)
                 return Unauthorized();
 
-            List<TreningModel> trening = TreningDbController.GetUserList((int)idUsera);
+            List<TreningModel> trening = TreningDbController.GetUserList((int)idKonta);
 
             return Ok(trening);
         }

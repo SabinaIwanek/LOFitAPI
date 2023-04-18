@@ -153,7 +153,7 @@ namespace LOFitAPI.DbControllers.Menu
                         while (reader.Read())
                         {
                             produkt.Id = (int)reader[0];
-                            produkt.Id_usera = (int)reader[1];
+                            try { produkt.Id_konta = (int)reader[1]; } catch { produkt.Id_konta = null; }
                             produkt.Nazwa = (string)reader[2];
                             try { produkt.Ean = (int)reader[3]; } catch { produkt.Ean = null; }
                             produkt.Gramy = (int)reader[4];

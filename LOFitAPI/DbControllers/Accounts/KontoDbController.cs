@@ -128,7 +128,7 @@ namespace LOFitAPI.DbControllers.Accounts
 
             return userId;
         }
-        public static int? ReturnKontoId(string email)
+        public static int? ReturnKontoId(string? email)
         {
             if (email == null) return null;
 

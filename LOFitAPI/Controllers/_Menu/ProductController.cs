@@ -14,12 +14,12 @@ namespace LOFitAPI.Controllers._Menu
         [HttpPost]
         public ActionResult<int> Add(ProduktModel product)
         {
-            int? idUsera = KontoDbController.ReturnUserId(User.Identity?.Name);
+            int? idKonta = KontoDbController.ReturnKontoId(User.Identity?.Name);
 
-            if (idUsera == null)
+            if (idKonta == null)
                 return Unauthorized();
 
-            product.Id_usera = (int)idUsera;
+            product.Id_konta = (int)idKonta;
 
             int answer = ProduktDbController.Add(product);
 
@@ -47,12 +47,12 @@ namespace LOFitAPI.Controllers._Menu
         [Route("userList")]
         public ActionResult<List<ProduktModel>> GetUserList()
         {
-            int? idUsera = KontoDbController.ReturnUserId(User.Identity?.Name);
+            int? idKonta = KontoDbController.ReturnKontoId(User.Identity?.Name);
 
-            if (idUsera == null)
+            if (idKonta == null)
                 return Unauthorized();
 
-            List<ProduktModel> product = ProduktDbController.GetUserList((int)idUsera);
+            List<ProduktModel> product = ProduktDbController.GetUserList((int)idKonta);
 
             return Ok(product);
         }

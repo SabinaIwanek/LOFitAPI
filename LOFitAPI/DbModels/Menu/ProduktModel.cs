@@ -3,7 +3,7 @@
     public class ProduktModel
     {
         public int Id { get; set; }
-        public int? Id_usera { get; set; }
+        public int? Id_konta { get; set; }
         public string Nazwa { get; set; }
         public int? Ean { get; set; }
         public int Gramy { get; set; }

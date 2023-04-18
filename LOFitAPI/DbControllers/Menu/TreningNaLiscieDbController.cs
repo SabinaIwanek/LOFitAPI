@@ -13,7 +13,7 @@ namespace LOFitAPI.DbControllers.Menu
                 try
                 {
                     Connection.Open();
-                    string query = $"INSERT INTO TreningNaLiscie VALUES({model.Id_usera},{SqlTools.ReturnInt(model.Id_trenera)}, {model.Id_treningu},{SqlTools.ReturnTime(model.Czas)},{SqlTools.ReturnInt(model.Kcla)},{SqlTools.ReturnDateTime(model.Data_czas)},{SqlTools.ReturnBool(model.Zatwierdzony)})";
+                    string query = $"INSERT INTO TreningNaLiscie VALUES({model.Id_usera},{SqlTools.ReturnInt(model.Id_trenera)}, {model.Id_treningu},{SqlTools.ReturnTime(model.Czas)},{SqlTools.ReturnInt(model.Kcla)},{SqlTools.ReturnString(model.Opis)},{SqlTools.ReturnDateTime(model.Data_czas)},{SqlTools.ReturnBool(model.Zatwierdzony)})";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
@@ -36,7 +36,7 @@ namespace LOFitAPI.DbControllers.Menu
                 try
                 {
                     Connection.Open();
-                    string query = $"UPDATE TreningNaLiscie SET id_usera={model.Id_usera},id_trenera={SqlTools.ReturnInt(model.Id_trenera)},id_treningu={model.Id_treningu}, czas={SqlTools.ReturnTime(model.Czas)},kcla={SqlTools.ReturnInt(model.Kcla)},data_czas={SqlTools.ReturnDateTime(model.Data_czas)},zatwierdzony={SqlTools.ReturnBool(model.Zatwierdzony)} WHERE id = {SqlTools.ReturnString(model.Id)}";
+                    string query = $"UPDATE TreningNaLiscie SET id_usera={model.Id_usera},id_trenera={SqlTools.ReturnInt(model.Id_trenera)},id_treningu={model.Id_treningu}, czas={SqlTools.ReturnTime(model.Czas)},kcla={SqlTools.ReturnInt(model.Kcla)},opis={SqlTools.ReturnString(model.Opis)},data_czas={SqlTools.ReturnDateTime(model.Data_czas)},zatwierdzony={SqlTools.ReturnBool(model.Zatwierdzony)} WHERE id = {SqlTools.ReturnString(model.Id)}";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
@@ -98,8 +98,9 @@ namespace LOFitAPI.DbControllers.Menu
                         model.Id_treningu = (int)reader[3];
                         try { model.Czas = new DateTime(1970, 1, 1) + (TimeSpan)reader[4]; } catch { model.Czas = null; }
                         try { model.Kcla = (int)reader[5]; } catch { model.Id_trenera = null; }
-                        model.Data_czas = (DateTime)reader[6];
-                        model.Zatwierdzony = (int)reader[7] > 0 ? true : false;
+                        try { model.Opis = (string)reader[6]; } catch { model.Opis = null; }
+                        model.Data_czas = (DateTime)reader[7];
+                        model.Zatwierdzony = (int)reader[8] > 0 ? true : false;
                     }
 
                     reader.Close();
@@ -134,8 +135,9 @@ namespace LOFitAPI.DbControllers.Menu
                         model.Id_treningu = (int)reader[3];
                         try { model.Czas = new DateTime(1970, 1, 1) + (TimeSpan)reader[4]; } catch { model.Czas = null; }
                         try { model.Kcla = (int)reader[5]; } catch { model.Id_trenera = null; }
-                        model.Data_czas = (DateTime)reader[6];
-                        model.Zatwierdzony = (int)reader[7] > 0 ? true : false;
+                        try { model.Opis = (string)reader[6]; } catch { model.Opis = null; }
+                        model.Data_czas = (DateTime)reader[7];
+                        model.Zatwierdzony = (int)reader[8] > 0 ? true : false;
 
                         list.Add(model);
                     }
@@ -151,11 +153,12 @@ namespace LOFitAPI.DbControllers.Menu
                         while (reader.Read())
                         {
                             trening.Id = (int)reader[0];
-                            trening.Id_usera = (int)reader[1];
+                            try { trening.Id_konta = (int)reader[1]; } catch { trening.Id_konta = null; }
                             trening.Nazwa = (string)reader[2];
                             try { trening.Czas = new DateTime(1970, 1, 1) + (TimeSpan)reader[3]; } catch { trening.Czas = null; }
-                            try { trening.Opis = reader[4].ToString(); } catch { trening.Opis = null; }
-                            trening.W_bazie_usera = (int)reader[5] > 0 ? true : false;
+                            try { trening.Kcla = (int)reader[4]; } catch { trening.Kcla = null; }
+                            try { trening.Opis = reader[5].ToString(); } catch { trening.Opis = null; }
+                            trening.W_bazie_usera = (int)reader[6] > 0 ? true : false;
                         }
 
                         item.Trening = trening;

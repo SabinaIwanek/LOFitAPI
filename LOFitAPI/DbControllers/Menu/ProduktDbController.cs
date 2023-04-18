@@ -15,14 +15,14 @@ namespace LOFitAPI.DbControllers.Menu
                 try
                 {
                     Connection.Open();
-                    string query = $"INSERT INTO Produkt VALUES({SqlTools.ReturnInt(model.Id_usera)},{SqlTools.ReturnString(model.Nazwa)}, {SqlTools.ReturnInt(model.Ean)},{model.Gramy}, {model.Kcla},{SqlTools.ReturnInt(model.Bialko)},{SqlTools.ReturnInt(model.Tluszcze)},{SqlTools.ReturnInt(model.Wegle)}, {model.W_bazie_programu},{SqlTools.ReturnDateTime(DateTime.Now)})";
+                    string query = $"INSERT INTO Produkt VALUES({SqlTools.ReturnInt(model.Id_konta)},{SqlTools.ReturnString(model.Nazwa)}, {SqlTools.ReturnInt(model.Ean)},{model.Gramy}, {model.Kcla},{SqlTools.ReturnInt(model.Bialko)},{SqlTools.ReturnInt(model.Tluszcze)},{SqlTools.ReturnInt(model.Wegle)}, {model.W_bazie_programu},{SqlTools.ReturnDateTime(DateTime.Now)})";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
 
                     reader.Close();
 
-                    string query2 = $"SELECT TOP 1 * FROM Produkt WHERE id_usera ={model.Id_usera} ORDER BY data_zalozenia DESC";
+                    string query2 = $"SELECT TOP 1 * FROM Produkt WHERE id_konta ={model.Id_konta} ORDER BY data_zalozenia DESC";
 
                     SqlCommand command2 = new SqlCommand(query2, Connection);
                     SqlDataReader reader2 = command2.ExecuteReader();
@@ -51,7 +51,7 @@ namespace LOFitAPI.DbControllers.Menu
                 try
                 {
                     Connection.Open();
-                    string query = $"UPDATE Produkt SET id_usera={SqlTools.ReturnInt(model.Id_usera)},nazwa={SqlTools.ReturnString(model.Nazwa)}, ean={SqlTools.ReturnInt(model.Ean)},gramy={model.Gramy}, kcla={model.Kcla},bialko={SqlTools.ReturnInt(model.Bialko)},tluszcze={SqlTools.ReturnInt(model.Tluszcze)},wegle={SqlTools.ReturnInt(model.Wegle)},w_bazie_programu={model.W_bazie_programu} WHERE id = {SqlTools.ReturnString(model.Id)}";
+                    string query = $"UPDATE Produkt SET id_konta={SqlTools.ReturnInt(model.Id_konta)},nazwa={SqlTools.ReturnString(model.Nazwa)}, ean={SqlTools.ReturnInt(model.Ean)},gramy={model.Gramy}, kcla={model.Kcla},bialko={SqlTools.ReturnInt(model.Bialko)},tluszcze={SqlTools.ReturnInt(model.Tluszcze)},wegle={SqlTools.ReturnInt(model.Wegle)},w_bazie_programu={model.W_bazie_programu} WHERE id = {SqlTools.ReturnString(model.Id)}";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
@@ -108,7 +108,7 @@ namespace LOFitAPI.DbControllers.Menu
                     while (reader.Read())
                     {
                         model.Id = (int)reader[0];
-                        model.Id_usera = (int)reader[1];
+                        try { model.Id_konta = (int)reader[1]; } catch { model.Id_konta = null; }
                         model.Nazwa = (string)reader[2];
                         try { model.Ean = (int)reader[3]; } catch { model.Ean = null; }
                         model.Gramy = (int)reader[4];
@@ -128,7 +128,7 @@ namespace LOFitAPI.DbControllers.Menu
 
             return model;
         }
-        public static List<ProduktModel> GetUserList(int Id_usera)
+        public static List<ProduktModel> GetUserList(int idKonta)
         {
             List<ProduktModel> list = new List<ProduktModel>();
 
@@ -138,7 +138,7 @@ namespace LOFitAPI.DbControllers.Menu
                 {
                     Connection.Open();
 
-                    SqlCommand command = new SqlCommand($"Select * from Produkt WHERE Id_usera = {Id_usera}", Connection);
+                    SqlCommand command = new SqlCommand($"Select * from Produkt WHERE Id_konta = {idKonta}", Connection);
                     SqlDataReader reader = command.ExecuteReader();
 
                     while (reader.Read())
@@ -146,7 +146,7 @@ namespace LOFitAPI.DbControllers.Menu
                         ProduktModel model = new ProduktModel();
 
                         model.Id = (int)reader[0];
-                        model.Id_usera = (int)reader[1];
+                        try { model.Id_konta = (int)reader[1]; } catch { model.Id_konta = null; }
                         model.Nazwa = (string)reader[2];
                         try { model.Ean = (int)reader[3]; } catch { model.Ean = null; }
                         model.Gramy = (int)reader[4];
@@ -186,7 +186,7 @@ namespace LOFitAPI.DbControllers.Menu
                         ProduktModel model = new ProduktModel();
 
                         model.Id = (int)reader[0];
-                        model.Id_usera = (int)reader[1];
+                        try { model.Id_konta = (int)reader[1]; } catch { model.Id_konta = null; }
                         model.Nazwa = (string)reader[2];
                         try { model.Ean = (int)reader[3]; } catch { model.Ean = null; }
                         model.Gramy = (int)reader[4];
