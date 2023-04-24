@@ -49,6 +49,8 @@ namespace LOFitAPI.DbControllers.Accounts
                 }
                 catch(Exception ex)
                 {
+                    string error = ex.ToString();
+
                     return false;
                 }
             }
@@ -110,7 +112,9 @@ namespace LOFitAPI.DbControllers.Accounts
             }
             catch (Exception ex)
             {
-                return null;
+                string error = ex.ToString();
+
+                return new UzytkownikModel();
             }
 
             return model;
@@ -150,7 +154,9 @@ namespace LOFitAPI.DbControllers.Accounts
             }
             catch (Exception ex)
             {
-                return null;
+                string error = ex.ToString();
+
+                return new List<UzytkownikModel>();
             }
 
             return list;

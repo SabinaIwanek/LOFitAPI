@@ -38,6 +38,8 @@ namespace LOFitAPI.DbControllers.Menu
                 }
                 catch (Exception ex)
                 {
+                    string error = ex.ToString();
+
                     return id;
                 }
             }
@@ -110,7 +112,7 @@ namespace LOFitAPI.DbControllers.Menu
                         model.Id = (int)reader[0];
                         try { model.Id_konta = (int)reader[1]; } catch { model.Id_konta = null; }
                         model.Nazwa = (string)reader[2];
-                        try { model.Czas = DateTime.Parse(reader[3].ToString()); } catch { model.Czas = null; }
+                        try { model.Czas = new DateTime(1970, 1, 1) + (TimeSpan)reader[3]; } catch { model.Czas = null; }
                         try { model.Kcla = (int)reader[4]; } catch { model.Kcla = null; }
                         try { model.Opis = reader[5].ToString(); } catch { model.Opis = null; }
                         model.W_bazie_usera = (int)reader[6] > 0 ? true : false;
@@ -120,7 +122,9 @@ namespace LOFitAPI.DbControllers.Menu
                     Connection.Close();
                 }
                 catch (Exception ex)
-                { }
+                {
+                    string error = ex.ToString();
+                }
             }
 
             return model;
@@ -145,7 +149,7 @@ namespace LOFitAPI.DbControllers.Menu
                         model.Id = (int)reader[0];
                         try { model.Id_konta = (int)reader[1]; } catch { model.Id_konta = null; }
                         model.Nazwa = (string)reader[2];
-                        try { model.Czas = DateTime.Parse(reader[3].ToString()); } catch { model.Czas = null; }
+                        try { model.Czas = new DateTime(1970, 1, 1) + (TimeSpan)reader[3]; } catch { model.Czas = null; }
                         try { model.Kcla = (int)reader[4]; } catch { model.Kcla = null; }
                         try { model.Opis = reader[5].ToString(); } catch { model.Opis = null; }
                         model.W_bazie_usera = (int)reader[6] > 0 ? true : false;
@@ -157,7 +161,9 @@ namespace LOFitAPI.DbControllers.Menu
                     Connection.Close();
                 }
                 catch (Exception ex)
-                { }
+                {
+                    string error = ex.ToString();
+                }
             }
 
             return list;
@@ -182,7 +188,7 @@ namespace LOFitAPI.DbControllers.Menu
                         model.Id = (int)reader[0];
                         try { model.Id_konta = (int)reader[1]; } catch { model.Id_konta = null; }
                         model.Nazwa = (string)reader[2];
-                        try { model.Czas = DateTime.Parse(reader[3].ToString()); } catch { model.Czas = null; }
+                        try { model.Czas = new DateTime(1970, 1, 1) + (TimeSpan)reader[3]; } catch { model.Czas = null; }
                         try { model.Kcla = (int)reader[4]; } catch { model.Kcla = null; }
                         try { model.Opis = reader[5].ToString(); } catch { model.Opis = null; }
                         model.W_bazie_usera = (int)reader[6] > 0 ? true : false;
@@ -194,7 +200,9 @@ namespace LOFitAPI.DbControllers.Menu
                     Connection.Close();
                 }
                 catch (Exception ex)
-                { }
+                {
+                    string error = ex.ToString();
+                }
             }
 
             return list;

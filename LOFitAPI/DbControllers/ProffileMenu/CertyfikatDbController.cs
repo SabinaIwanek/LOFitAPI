@@ -129,7 +129,9 @@ namespace LOFitAPI.DbControllers.ProffileMenu
                     Connection.Close();
                 }
                 catch (Exception ex)
-                { }
+                {
+                    string error = ex.ToString();
+                }
             }
 
             return model;
@@ -166,7 +168,9 @@ namespace LOFitAPI.DbControllers.ProffileMenu
                     Connection.Close();
                 }
                 catch (Exception ex)
-                { }
+                {
+                    string error = ex.ToString();
+                }
             }
 
             return list;
@@ -203,7 +207,9 @@ namespace LOFitAPI.DbControllers.ProffileMenu
                     Connection.Close();
                 }
                 catch (Exception ex)
-                { }
+                {
+                    string error = ex.ToString();
+                }
             }
 
             return list;
@@ -242,7 +248,9 @@ namespace LOFitAPI.DbControllers.ProffileMenu
                     Connection.Close();
                 }
                 catch (Exception ex)
-                { }
+                {
+                    string error = ex.ToString();
+                }
             }
 
             return list;

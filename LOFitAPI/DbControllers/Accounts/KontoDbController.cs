@@ -226,7 +226,9 @@ namespace LOFitAPI.DbControllers.Accounts
             }
             catch (Exception ex)
             {
-                return null;
+                string error = ex.ToString();
+
+                return new KontoModel();
             }
 
             return model;

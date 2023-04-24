@@ -126,7 +126,9 @@ namespace LOFitAPI.DbControllers.Accounts
             }
             catch (Exception ex)
             {
-                return null;
+                string error = ex.ToString();
+
+                return new List<TrenerModel>();
             }
             return list;
         }
@@ -167,7 +169,9 @@ namespace LOFitAPI.DbControllers.Accounts
             }
             catch (Exception ex)
             {
-                return null;
+                string error = ex.ToString();
+
+                return new TrenerModel();
             }
 
             return model;
@@ -215,7 +219,9 @@ namespace LOFitAPI.DbControllers.Accounts
             }
             catch (Exception ex)
             {
-                return null;
+                string error = ex.ToString();
+
+                return new List<TrenerModel>();
             }
             return list;
         }

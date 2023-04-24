@@ -38,6 +38,8 @@ namespace LOFitAPI.DbControllers.Menu
                 }
                 catch (Exception ex)
                 {
+                    string error = ex.ToString();
+
                     return id;
                 }
             }
@@ -75,7 +77,7 @@ namespace LOFitAPI.DbControllers.Menu
                 {
                     Connection.Open();
                     //Utworzenie Użytkownika
-                    string query = $"DELETE FROM Produkt WHERE id={id};";
+                    string query = $"UPDATE Produkt SET id_konta=0 WHERE id={id};";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
@@ -123,7 +125,9 @@ namespace LOFitAPI.DbControllers.Menu
                     Connection.Close();
                 }
                 catch (Exception ex)
-                { }
+                {
+                    string error = ex.ToString();
+                }
             }
 
             return model;
@@ -163,7 +167,9 @@ namespace LOFitAPI.DbControllers.Menu
                     Connection.Close();
                 }
                 catch (Exception ex)
-                { }
+                {
+                    string error = ex.ToString();
+                }
             }
 
             return list;
@@ -203,7 +209,9 @@ namespace LOFitAPI.DbControllers.Menu
                     Connection.Close();
                 }
                 catch (Exception ex)
-                { }
+                {
+                    string error = ex.ToString();
+                }
             }
 
             return list;

@@ -10,10 +10,7 @@
         public DateTime? Data_urodzenia { get; set; }
         public int? Nr_telefonu { get; set; }
 
-        public UzytkownikPostModel()
-        {
-
-        }
+        
         public UzytkownikPostModel(TrenerPostModel trenerModel)
         {
             Email = trenerModel.Email;

@@ -88,7 +88,9 @@ namespace LOFitAPI.DbControllers.Menu
                     Connection.Close();
                 }
                 catch (Exception ex)
-                { }
+                {
+                    string error = ex.ToString();
+                }
             }
 
             return model;
@@ -132,7 +134,9 @@ namespace LOFitAPI.DbControllers.Menu
                     Connection.Close();
                 }
                 catch (Exception ex)
-                { }
+                {
+                    string error = ex.ToString();
+                }
             }
 
             return ResponseTools.ReturnWeekMeasurement(list, date);

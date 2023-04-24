@@ -14,13 +14,16 @@ namespace LOFitAPI.Controllers._Menu
         [HttpPost]
         public ActionResult<int> Add(ProduktModel product)
         {
-            int? idKonta = KontoDbController.ReturnKontoId(User.Identity?.Name);
+            if(product.Id_konta != 0)
+            {
+                int? idKonta = KontoDbController.ReturnKontoId(User.Identity?.Name);
 
-            if (idKonta == null)
-                return Unauthorized();
+                if (idKonta == null)
+                    return Unauthorized();
 
-            product.Id_konta = (int)idKonta;
-
+                product.Id_konta = (int)idKonta;
+            }
+            
             int answer = ProduktDbController.Add(product);
 
             return Ok(answer);
@@ -30,6 +33,15 @@ namespace LOFitAPI.Controllers._Menu
         public ActionResult<string> Update(ProduktModel product)
         {
             string answer = ProduktDbController.Update(product);
+
+            return Ok(answer);
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public ActionResult<string> Delete(int id)
+        {
+            string answer = ProduktDbController.Delete(id);
 
             return Ok(answer);
         }
