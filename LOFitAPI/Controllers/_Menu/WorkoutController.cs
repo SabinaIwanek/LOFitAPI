@@ -14,12 +14,15 @@ namespace LOFitAPI.Controllers._Menu
         [HttpPost]
         public ActionResult<int> Add(TreningModel trening)
         {
-            int? idKonta = KontoDbController.ReturnKontoId(User.Identity?.Name);
+            if (trening.Id_konta != 0)
+            {
+                int? idKonta = KontoDbController.ReturnKontoId(User.Identity?.Name);
 
-            if (idKonta == null)
-                return Unauthorized();
+                if (idKonta == null)
+                    return Unauthorized();
 
-            trening.Id_konta = (int)idKonta;
+                trening.Id_konta = (int)idKonta;
+            }
 
             int answer = TreningDbController.Add(trening);
 
@@ -30,6 +33,15 @@ namespace LOFitAPI.Controllers._Menu
         public ActionResult<string> Update(TreningModel trening)
         {
             string answer = TreningDbController.Update(trening);
+
+            return Ok(answer);
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public ActionResult<string> Delete(int id)
+        {
+            string answer = TreningDbController.Delete(id);
 
             return Ok(answer);
         }

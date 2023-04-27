@@ -77,7 +77,7 @@ namespace LOFitAPI.DbControllers.Menu
                 {
                     Connection.Open();
                     //Utworzenie Użytkownika
-                    string query = $"DELETE FROM Trening WHERE id={id};";
+                    string query = $"UPDATE Trening SET id_konta=0 WHERE id={id};";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
