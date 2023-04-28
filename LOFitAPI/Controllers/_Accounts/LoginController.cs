@@ -1,6 +1,7 @@
 ﻿using LOFitAPI.Controllers.GetModel;
 using LOFitAPI.Controllers.PostModels.Login;
 using LOFitAPI.DbControllers.Accounts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -60,6 +61,21 @@ namespace LOFitAPI.Controllers._Accounts
 
             return Ok($"Ok");
 
+        }
+
+        [Authorize]
+        [Route("changepsw")]
+        [HttpPost]
+        public ActionResult<string> ChangePsw(ChangePasswordPostModel form)
+        {
+            int? idKonta = KontoDbController.ReturnKontoId(User.Identity?.Name);
+
+            if (idKonta == null) return Unauthorized();
+
+            bool wynik = KontoDbController.ChangePassword(form, (int)idKonta);
+            if (wynik) return Ok("Ok");
+
+            return Unauthorized();
         }
     }
 }

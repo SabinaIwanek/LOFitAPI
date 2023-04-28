@@ -65,7 +65,7 @@ namespace LOFitAPI.DbControllers.Accounts
                 {
                     Connection.Open();
                     //Utworzenie Użytkownika
-                    string query = $"UPDATE Uzytkownik SET imie ={form.Imie}, nazwisko={SqlTools.ReturnString(form.Nazwisko)}, plec={form.Plec}, data_urodzenia={SqlTools.ReturnDate(form.Data_urodzenia)}, id_trenera={SqlTools.ReturnString(form.Id_trenera)}, id_dietetyka={SqlTools.ReturnString(form.Id_dietetyka)}, nr_telefonu={SqlTools.ReturnInt(form.Nr_telefonu)} WHERE id = {SqlTools.ReturnString(form.Id)}";
+                    string query = $"UPDATE Uzytkownik SET imie ='{form.Imie}', nazwisko={SqlTools.ReturnString(form.Nazwisko)}, plec={form.Plec}, data_urodzenia={SqlTools.ReturnDate(form.Data_urodzenia)}, id_trenera={SqlTools.ReturnString(form.Id_trenera)}, id_dietetyka={SqlTools.ReturnString(form.Id_dietetyka)}, nr_telefonu={SqlTools.ReturnInt(form.Nr_telefonu)} WHERE id = {form.Id}";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();

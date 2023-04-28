@@ -24,6 +24,16 @@ namespace LOFitAPI.Controllers._Accounts
         [Route("{id}")]
         public ActionResult<UzytkownikModel> GetOne(int id)
         {
+            if(id == -1)
+            {
+                int? idUsera = KontoDbController.ReturnUserId(User.Identity?.Name);
+
+                if (idUsera == null)
+                    return Unauthorized();
+
+                id = (int)idUsera;
+            }
+
             UzytkownikModel model = UzytkownikDbController.GetOne(id);
 
             return Ok(model);

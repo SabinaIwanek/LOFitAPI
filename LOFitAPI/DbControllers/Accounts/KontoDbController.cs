@@ -45,6 +45,35 @@ namespace LOFitAPI.DbControllers.Accounts
 
             return type;
         }
+        public static bool ChangePassword(ChangePasswordPostModel form, int idKonta)
+        {
+            bool isOk = false;
+
+            using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+            {
+                Connection.Open();
+
+                SqlCommand command = new SqlCommand($"SELECT * FROM Konto WHERE id = {idKonta} AND haslo = '{form.OldPassword}'", Connection);
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    isOk= true;
+                }
+
+                reader.Close();
+
+                SqlCommand command2 = new SqlCommand($"UPDATE Konto SET haslo = '{form.NewPassword}' WHERE id = {idKonta}", Connection);
+
+                SqlDataReader reader2 = command2.ExecuteReader();
+
+                reader2.Close();
+
+                Connection.Close();
+            }
+
+            return isOk;
+        }
         private static bool ChangeForgottenPassword(LoginPostModel form)
         {
             int? userId = null;
