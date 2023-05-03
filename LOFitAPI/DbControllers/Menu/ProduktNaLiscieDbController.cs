@@ -6,28 +6,31 @@ namespace LOFitAPI.DbControllers.Menu
 {
     public static class ProduktNaLiscieDbController
     {
-        public static string Add(ProduktNaLiscieModel model)
+        public static int Add(ProduktNaLiscieModel model)
         {
+            int id = 0;
+
             using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
             {
                 try
                 {
                     Connection.Open();
-                    string query = $"INSERT INTO ProduktNaLiscie VALUES({model.Id_produktu},{model.Id_usera},{SqlTools.ReturnString(model.Nazwa_dania)}, {model.Gramy},{SqlTools.ReturnDateTime(model.Data_czas)},{SqlTools.ReturnString(model.Opis_od_trenera)},{SqlTools.ReturnInt(model.Id_trenera)},{SqlTools.ReturnBool(model.Zatwierdzony)})";
+                    string query = $"INSERT INTO ProduktNaLiscie VALUES({model.Id_produktu},{model.Id_usera},{SqlTools.ReturnString(model.Nazwa_dania)}, {model.Gramy},{SqlTools.ReturnDateTime(model.Data_czas)},{SqlTools.ReturnString(model.Opis_od_trenera)},{SqlTools.ReturnInt(model.Id_trenera)},{SqlTools.ReturnBool(model.Zatwierdzony)}); SELECT SCOPE_IDENTITY();";
 
                     SqlCommand command = new SqlCommand(query, Connection);
-                    SqlDataReader reader = command.ExecuteReader();
+                    //SqlDataReader reader = command.ExecuteReader();
+                    id = Convert.ToInt32(command.ExecuteScalar());
 
-                    reader.Close();
+                    //reader.Close();
                     Connection.Close();
                 }
                 catch (Exception ex)
                 {
-                    return ex.ToString();
+                    return 0;
                 }
             }
 
-            return "Ok";
+            return id;
         }
         public static string Update(ProduktNaLiscieModel model)
         {
@@ -61,6 +64,30 @@ namespace LOFitAPI.DbControllers.Menu
                     Connection.Open();
                     //Utworzenie Użytkownika
                     string query = $"DELETE FROM ProduktNaLiscie WHERE id={id};";
+
+                    SqlCommand command = new SqlCommand(query, Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    reader.Close();
+                    Connection.Close();
+
+                }
+
+                return "Ok";
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+        }
+        public static string CheckedBoxChange(int id, int check)
+        {
+            try
+            {
+                using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+                {
+                    Connection.Open();
+                    string query = $"UPDATE ProduktNaLiscie SET zatwierdzony = {check} WHERE id={id};";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();

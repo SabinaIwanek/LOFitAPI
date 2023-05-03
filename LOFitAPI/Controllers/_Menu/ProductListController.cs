@@ -12,7 +12,7 @@ namespace LOFitAPI.Controllers._Menu
     public class ProductListController : ControllerBase
     {
         [HttpPost]
-        public ActionResult<string> Add(ProduktNaLiscieModel product)
+        public ActionResult<int> Add(ProduktNaLiscieModel product)
         {
             if(product.Id_usera == -1)
             {
@@ -24,9 +24,9 @@ namespace LOFitAPI.Controllers._Menu
                 product.Id_usera = (int)idUsera;
             }
 
-            string answer = ProduktNaLiscieDbController.Add(product);
+            int id = ProduktNaLiscieDbController.Add(product);
 
-            return Ok(answer);
+            return Ok(id);
         }
 
         [HttpPut]
@@ -42,6 +42,15 @@ namespace LOFitAPI.Controllers._Menu
         public ActionResult<string> Delete(int id)
         {
             string answer = ProduktNaLiscieDbController.Delete(id);
+
+            return Ok(answer);
+        }
+
+        [HttpGet]
+        [Route("CheckedBoxChange/{id}/{check}")]
+        public ActionResult<string> CheckedBoxChange(int id, int check)
+        {
+            string answer = ProduktNaLiscieDbController.CheckedBoxChange(id, check);
 
             return Ok(answer);
         }

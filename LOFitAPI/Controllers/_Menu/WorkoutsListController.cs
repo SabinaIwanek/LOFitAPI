@@ -12,7 +12,7 @@ namespace LOFitAPI.Controllers._Menu
     public class WorkoutsListController : ControllerBase
     {
         [HttpPost]
-        public ActionResult<string> Add(TreningNaLiscieModel trening)
+        public ActionResult<int> Add(TreningNaLiscieModel trening)
         {
             if(trening.Id_usera == -1)
             {
@@ -24,9 +24,9 @@ namespace LOFitAPI.Controllers._Menu
                 trening.Id_usera = (int)idUsera;
             }
             
-            string answer = TreningNaLiscieDbController.Add(trening);
+            int id = TreningNaLiscieDbController.Add(trening);
 
-            return Ok(answer);
+            return Ok(id);
         }
 
         [HttpPut]
@@ -55,6 +55,16 @@ namespace LOFitAPI.Controllers._Menu
 
             return Ok(answer);
         }
+
+        [HttpGet]
+        [Route("CheckedBoxChange/{id}/{check}")]
+        public ActionResult<string> CheckedBoxChange(int id, int check)
+        {
+            string answer = TreningNaLiscieDbController.CheckedBoxChange(id, check);
+
+            return Ok(answer);
+        }
+
 
         [HttpGet]
         [Route("{id}")]

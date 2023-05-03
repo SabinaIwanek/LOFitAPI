@@ -6,28 +6,31 @@ namespace LOFitAPI.DbControllers.Menu
 {
     public static class TreningNaLiscieDbController
     {
-        public static string Add(TreningNaLiscieModel model)
+        public static int Add(TreningNaLiscieModel model)
         {
+            int id = 0;
+
             using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
             {
                 try
                 {
                     Connection.Open();
-                    string query = $"INSERT INTO TreningNaLiscie VALUES({model.Id_usera},{SqlTools.ReturnInt(model.Id_trenera)}, {model.Id_treningu},{SqlTools.ReturnTime(model.Czas)},{SqlTools.ReturnInt(model.Kcla)},{SqlTools.ReturnString(model.Opis)},{SqlTools.ReturnDateTime(model.Data_czas)},{SqlTools.ReturnBool(model.Zatwierdzony)})";
+                    string query = $"INSERT INTO TreningNaLiscie VALUES({model.Id_usera},{SqlTools.ReturnInt(model.Id_trenera)}, {model.Id_treningu},{SqlTools.ReturnTime(model.Czas)},{SqlTools.ReturnInt(model.Kcla)},{SqlTools.ReturnString(model.Opis)},{SqlTools.ReturnDateTime(model.Data_czas)},{SqlTools.ReturnBool(model.Zatwierdzony)}); SELECT SCOPE_IDENTITY();";
 
                     SqlCommand command = new SqlCommand(query, Connection);
-                    SqlDataReader reader = command.ExecuteReader();
+                    //SqlDataReader reader = command.ExecuteReader();
+                    id = Convert.ToInt32(command.ExecuteScalar());
 
-                    reader.Close();
+                    //reader.Close();
                     Connection.Close();
                 }
                 catch (Exception ex)
                 {
-                    return ex.ToString();
+                    return 0;
                 }
             }
 
-            return "Ok";
+            return id;
         }
         public static string Update(TreningNaLiscieModel model)
         {
@@ -61,6 +64,30 @@ namespace LOFitAPI.DbControllers.Menu
                     Connection.Open();
                     //Utworzenie Użytkownika
                     string query = $"DELETE FROM TreningNaLiscie WHERE id={id};";
+
+                    SqlCommand command = new SqlCommand(query, Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    reader.Close();
+                    Connection.Close();
+
+                }
+
+                return "Ok";
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+        }
+        public static string CheckedBoxChange(int id, int check)
+        {
+            try
+            {
+                using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+                {
+                    Connection.Open();
+                    string query = $"UPDATE TreningNaLiscie SET zatwierdzony = {check} WHERE id={id};";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
