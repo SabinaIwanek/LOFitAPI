@@ -11,6 +11,7 @@
         public string? Opis_od_trenera { get; set; }
         public int? Id_trenera { get; set; }
         public bool Zatwierdzony { get; set; }
+        public int? Id_planu { get; set; }
         public ProduktModel Produkt { get; set; }
     }
 }

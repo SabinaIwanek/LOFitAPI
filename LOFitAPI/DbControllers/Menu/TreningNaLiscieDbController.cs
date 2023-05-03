@@ -6,6 +6,23 @@ namespace LOFitAPI.DbControllers.Menu
 {
     public static class TreningNaLiscieDbController
     {
+        private static TreningNaLiscieModel Struktura(SqlDataReader reader)
+        {
+            TreningNaLiscieModel model = new TreningNaLiscieModel();
+
+            model.Id = (int)reader[0];
+            model.Id_usera = (int)reader[1];
+            try { model.Id_trenera = (int)reader[2]; } catch { model.Id_trenera = null; }
+            model.Id_treningu = (int)reader[3];
+            try { model.Czas = new DateTime(1970, 1, 1) + (TimeSpan)reader[4]; } catch { model.Czas = null; }
+            try { model.Kcla = (int)reader[5]; } catch { model.Id_trenera = null; }
+            try { model.Opis = (string)reader[6]; } catch { model.Opis = null; }
+            model.Data_czas = (DateTime)reader[7];
+            model.Zatwierdzony = (int)reader[8] > 0 ? true : false;
+            try { model.Id_planu = (int)reader[9]; } catch { model.Id_planu = null; }
+
+            return model;
+        }
         public static int Add(TreningNaLiscieModel model)
         {
             int id = 0;
@@ -15,7 +32,7 @@ namespace LOFitAPI.DbControllers.Menu
                 try
                 {
                     Connection.Open();
-                    string query = $"INSERT INTO TreningNaLiscie VALUES({model.Id_usera},{SqlTools.ReturnInt(model.Id_trenera)}, {model.Id_treningu},{SqlTools.ReturnTime(model.Czas)},{SqlTools.ReturnInt(model.Kcla)},{SqlTools.ReturnString(model.Opis)},{SqlTools.ReturnDateTime(model.Data_czas)},{SqlTools.ReturnBool(model.Zatwierdzony)}); SELECT SCOPE_IDENTITY();";
+                    string query = $"INSERT INTO TreningNaLiscie VALUES({model.Id_usera},{SqlTools.ReturnInt(model.Id_trenera)}, {model.Id_treningu},{SqlTools.ReturnTime(model.Czas)},{SqlTools.ReturnInt(model.Kcla)},{SqlTools.ReturnString(model.Opis)},{SqlTools.ReturnDateTime(model.Data_czas)},{SqlTools.ReturnBool(model.Zatwierdzony)}, {SqlTools.ReturnInt(model.Id_planu)}); SELECT SCOPE_IDENTITY();";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     //SqlDataReader reader = command.ExecuteReader();
@@ -39,7 +56,7 @@ namespace LOFitAPI.DbControllers.Menu
                 try
                 {
                     Connection.Open();
-                    string query = $"UPDATE TreningNaLiscie SET id_usera={model.Id_usera},id_trenera={SqlTools.ReturnInt(model.Id_trenera)},id_treningu={model.Id_treningu}, czas={SqlTools.ReturnTime(model.Czas)},kcla={SqlTools.ReturnInt(model.Kcla)},opis={SqlTools.ReturnString(model.Opis)},data_czas={SqlTools.ReturnDateTime(model.Data_czas)},zatwierdzony={SqlTools.ReturnBool(model.Zatwierdzony)} WHERE id = {SqlTools.ReturnString(model.Id)}";
+                    string query = $"UPDATE TreningNaLiscie SET id_usera={model.Id_usera},id_trenera={SqlTools.ReturnInt(model.Id_trenera)},id_treningu={model.Id_treningu}, czas={SqlTools.ReturnTime(model.Czas)},kcla={SqlTools.ReturnInt(model.Kcla)},opis={SqlTools.ReturnString(model.Opis)},data_czas={SqlTools.ReturnDateTime(model.Data_czas)},zatwierdzony={SqlTools.ReturnBool(model.Zatwierdzony)}, id_planu={SqlTools.ReturnInt(model.Id_planu)} WHERE id = {SqlTools.ReturnString(model.Id)}";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
@@ -119,15 +136,36 @@ namespace LOFitAPI.DbControllers.Menu
 
                     while (reader.Read())
                     {
-                        model.Id = (int)reader[0];
-                        model.Id_usera = (int)reader[1];
-                        try { model.Id_trenera = (int)reader[2]; } catch { model.Id_trenera = null; }
-                        model.Id_treningu = (int)reader[3];
-                        try { model.Czas = new DateTime(1970, 1, 1) + (TimeSpan)reader[4]; } catch { model.Czas = null; }
-                        try { model.Kcla = (int)reader[5]; } catch { model.Id_trenera = null; }
-                        try { model.Opis = (string)reader[6]; } catch { model.Opis = null; }
-                        model.Data_czas = (DateTime)reader[7];
-                        model.Zatwierdzony = (int)reader[8] > 0 ? true : false;
+                        model = Struktura(reader);
+                    }
+
+                    reader.Close();
+                    Connection.Close();
+                }
+                catch (Exception ex)
+                {
+                    string error = ex.ToString();
+                }
+            }
+
+            return model;
+        }
+        public static TreningNaLiscieModel GetOnePlan(int id)
+        {
+            TreningNaLiscieModel model = new TreningNaLiscieModel();
+
+            using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+            {
+                try
+                {
+                    Connection.Open();
+
+                    SqlCommand command = new SqlCommand($"Select * from TreningNaLiscie WHERE id_planu = {id}", Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        model = Struktura(reader);
                     }
 
                     reader.Close();
@@ -156,19 +194,7 @@ namespace LOFitAPI.DbControllers.Menu
 
                     while (reader.Read())
                     {
-                        TreningNaLiscieModel model = new TreningNaLiscieModel();
-
-                        model.Id = (int)reader[0];
-                        model.Id_usera = (int)reader[1];
-                        try { model.Id_trenera = (int)reader[2]; } catch { model.Id_trenera = null; }
-                        model.Id_treningu = (int)reader[3];
-                        try { model.Czas = new DateTime(1970, 1, 1) + (TimeSpan)reader[4]; } catch { model.Czas = null; }
-                        try { model.Kcla = (int)reader[5]; } catch { model.Id_trenera = null; }
-                        try { model.Opis = (string)reader[6]; } catch { model.Opis = null; }
-                        model.Data_czas = (DateTime)reader[7];
-                        model.Zatwierdzony = (int)reader[8] > 0 ? true : false;
-
-                        list.Add(model);
+                        list.Add(Struktura(reader));
                     }
 
                     reader.Close();

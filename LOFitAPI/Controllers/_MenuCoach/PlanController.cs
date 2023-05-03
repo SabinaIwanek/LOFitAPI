@@ -21,13 +21,13 @@ namespace LOFitAPI.Controllers._Menu
 
             List<TreningNaLiscieModel> list = new List<TreningNaLiscieModel>
             {
-                TreningNaLiscieDbController.GetOne(model.Dzien1),
-                TreningNaLiscieDbController.GetOne(model.Dzien2),
-                TreningNaLiscieDbController.GetOne(model.Dzien3),
-                TreningNaLiscieDbController.GetOne(model.Dzien4),
-                TreningNaLiscieDbController.GetOne(model.Dzien5),
-                TreningNaLiscieDbController.GetOne(model.Dzien6),
-                TreningNaLiscieDbController.GetOne(model.Dzien7)
+                TreningNaLiscieDbController.GetOnePlan(model.Dzien1),
+                TreningNaLiscieDbController.GetOnePlan(model.Dzien2),
+                TreningNaLiscieDbController.GetOnePlan(model.Dzien3),
+                TreningNaLiscieDbController.GetOnePlan(model.Dzien4),
+                TreningNaLiscieDbController.GetOnePlan(model.Dzien5),
+                TreningNaLiscieDbController.GetOnePlan(model.Dzien6),
+                TreningNaLiscieDbController.GetOnePlan(model.Dzien7)
             };
 
             return Ok(list);
@@ -41,13 +41,13 @@ namespace LOFitAPI.Controllers._Menu
 
             List<ProduktNaLiscieModel> list = new List<ProduktNaLiscieModel>
             {
-                ProduktNaLiscieDbController.GetOne(model.Dzien1),
-                ProduktNaLiscieDbController.GetOne(model.Dzien2),
-                ProduktNaLiscieDbController.GetOne(model.Dzien3),
-                ProduktNaLiscieDbController.GetOne(model.Dzien4),
-                ProduktNaLiscieDbController.GetOne(model.Dzien5),
-                ProduktNaLiscieDbController.GetOne(model.Dzien6),
-                ProduktNaLiscieDbController.GetOne(model.Dzien7)
+                ProduktNaLiscieDbController.GetOnePlan(model.Dzien1),
+                ProduktNaLiscieDbController.GetOnePlan(model.Dzien2),
+                ProduktNaLiscieDbController.GetOnePlan(model.Dzien3),
+                ProduktNaLiscieDbController.GetOnePlan(model.Dzien4),
+                ProduktNaLiscieDbController.GetOnePlan(model.Dzien5),
+                ProduktNaLiscieDbController.GetOnePlan(model.Dzien6),
+                ProduktNaLiscieDbController.GetOnePlan(model.Dzien7)
             };
 
             return Ok(list);
