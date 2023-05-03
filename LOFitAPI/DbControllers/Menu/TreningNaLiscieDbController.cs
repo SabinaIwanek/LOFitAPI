@@ -23,6 +23,20 @@ namespace LOFitAPI.DbControllers.Menu
 
             return model;
         }
+        private static TreningModel StrukturaTrening(SqlDataReader reader)
+        {
+            TreningModel model = new TreningModel();
+
+            model.Id = (int)reader[0];
+            try { model.Id_konta = (int)reader[1]; } catch { model.Id_konta = null; }
+            model.Nazwa = (string)reader[2];
+            try { model.Czas = new DateTime(1970, 1, 1) + (TimeSpan)reader[3]; } catch { model.Czas = null; }
+            try { model.Kcla = (int)reader[4]; } catch { model.Kcla = null; }
+            try { model.Opis = reader[5].ToString(); } catch { model.Opis = null; }
+            model.W_bazie_usera = (int)reader[6] > 0 ? true : false;
+
+            return model;
+        }
         public static int Add(TreningNaLiscieModel model)
         {
             int id = 0;
@@ -140,6 +154,21 @@ namespace LOFitAPI.DbControllers.Menu
                     }
 
                     reader.Close();
+
+                    TreningModel trening = new TreningModel();
+                    command = new SqlCommand($"Select * from Trening WHERE id = {model.Id_treningu}", Connection);
+                    reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        trening = StrukturaTrening(reader);
+                    }
+
+                    model.Trening = trening;
+
+                    reader.Close();
+
+
                     Connection.Close();
                 }
                 catch (Exception ex)
@@ -150,9 +179,9 @@ namespace LOFitAPI.DbControllers.Menu
 
             return model;
         }
-        public static TreningNaLiscieModel GetOnePlan(int id)
+        public static List<TreningNaLiscieModel> GetOnePlan(int id)
         {
-            TreningNaLiscieModel model = new TreningNaLiscieModel();
+            List<TreningNaLiscieModel> list = new List<TreningNaLiscieModel>();
 
             using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
             {
@@ -165,10 +194,27 @@ namespace LOFitAPI.DbControllers.Menu
 
                     while (reader.Read())
                     {
-                        model = Struktura(reader);
+                        list.Add(Struktura(reader));
                     }
 
                     reader.Close();
+
+                    foreach (var item in list)
+                    {
+                        TreningModel trening = new TreningModel();
+                        command = new SqlCommand($"Select * from Trening WHERE id = {item.Id_treningu}", Connection);
+                        reader = command.ExecuteReader();
+
+                        while (reader.Read())
+                        {
+                            trening = StrukturaTrening(reader);
+                        }
+
+                        item.Trening = trening;
+
+                        reader.Close();
+                    }
+
                     Connection.Close();
                 }
                 catch (Exception ex)
@@ -177,7 +223,7 @@ namespace LOFitAPI.DbControllers.Menu
                 }
             }
 
-            return model;
+            return list;
         }
         public static List<TreningNaLiscieModel> GetUserList(int Id_usera, DateTime date)
         {
@@ -207,13 +253,7 @@ namespace LOFitAPI.DbControllers.Menu
 
                         while (reader.Read())
                         {
-                            trening.Id = (int)reader[0];
-                            try { trening.Id_konta = (int)reader[1]; } catch { trening.Id_konta = null; }
-                            trening.Nazwa = (string)reader[2];
-                            try { trening.Czas = new DateTime(1970, 1, 1) + (TimeSpan)reader[3]; } catch { trening.Czas = null; }
-                            try { trening.Kcla = (int)reader[4]; } catch { trening.Kcla = null; }
-                            try { trening.Opis = reader[5].ToString(); } catch { trening.Opis = null; }
-                            trening.W_bazie_usera = (int)reader[6] > 0 ? true : false;
+                            trening = StrukturaTrening(reader);
                         }
 
                         item.Trening = trening;

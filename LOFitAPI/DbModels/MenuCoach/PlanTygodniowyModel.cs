@@ -13,5 +13,6 @@
         public int Dzien5 { get; set; }
         public int Dzien6 { get; set; }
         public int Dzien7 { get; set; }
+        public int Kcla { get; set; }
     }
 }

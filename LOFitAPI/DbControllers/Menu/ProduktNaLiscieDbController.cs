@@ -1,6 +1,7 @@
 ﻿using LOFitAPI.DbModels.Menu;
 using LOFitAPI.Tools;
 using Microsoft.Data.SqlClient;
+using System.Collections.Generic;
 
 namespace LOFitAPI.DbControllers.Menu
 {
@@ -18,8 +19,25 @@ namespace LOFitAPI.DbControllers.Menu
             model.Data_czas = (DateTime)reader[5];
             try { model.Opis_od_trenera = reader[6].ToString(); } catch { model.Opis_od_trenera = null; }
             try { model.Id_trenera = (int)reader[7]; } catch { model.Id_trenera = null; }
-            model.Zatwierdzony = (bool)reader[8];
+            model.Zatwierdzony = (int)reader[8] == 0? false : true;
             try { model.Id_planu = (int)reader[9]; } catch { model.Id_planu = null; }
+
+            return model;
+        }
+        private static ProduktModel StrukturaProd(SqlDataReader reader)
+        {
+            ProduktModel model = new ProduktModel();
+
+            model.Id = (int)reader[0];
+            try { model.Id_konta = (int)reader[1]; } catch { model.Id_konta = null; }
+            model.Nazwa = (string)reader[2];
+            try { model.Ean = (int)reader[3]; } catch { model.Ean = null; }
+            model.Gramy = (int)reader[4];
+            model.Kcla = (int)reader[5];
+            try { model.Bialko = (int)reader[6]; } catch { model.Bialko = null; }
+            try { model.Tluszcze = (int)reader[7]; } catch { model.Tluszcze = null; }
+            try { model.Wegle = (int)reader[8]; } catch { model.Wegle = null; }
+            model.W_bazie_programu = (int)reader[9];
 
             return model;
         }
@@ -56,7 +74,7 @@ namespace LOFitAPI.DbControllers.Menu
                 try
                 {
                     Connection.Open();
-                    string query = $"UPDATE ProduktNaLiscie SET id_produktu={model.Id_produktu},id_usera={model.Id_usera},nazwa_dania={SqlTools.ReturnString(model.Nazwa_dania)},gramy={model.Gramy}, data_czas={SqlTools.ReturnDateTime(model.Data_czas)},opis_od_trenera={SqlTools.ReturnString(model.Opis_od_trenera)},id_trenera={SqlTools.ReturnInt(model.Id_trenera)},data_czas={SqlTools.ReturnDateTime(model.Data_czas)},zatwierdzony={SqlTools.ReturnBool(model.Zatwierdzony)}, id_planu = {SqlTools.ReturnInt(model.Id_planu)} WHERE id = {SqlTools.ReturnString(model.Id)}";
+                    string query = $"UPDATE ProduktNaLiscie SET id_produktu={model.Id_produktu},id_usera={model.Id_usera},nazwa_dania={SqlTools.ReturnString(model.Nazwa_dania)},gramy={model.Gramy}, data_czas={SqlTools.ReturnDateTime(model.Data_czas)},opis_od_trenera={SqlTools.ReturnString(model.Opis_od_trenera)},id_trenera={SqlTools.ReturnInt(model.Id_trenera)},zatwierdzony={SqlTools.ReturnBool(model.Zatwierdzony)}, id_planu = {SqlTools.ReturnInt(model.Id_planu)} WHERE id = {SqlTools.ReturnString(model.Id)}";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
@@ -138,8 +156,22 @@ namespace LOFitAPI.DbControllers.Menu
                     {
                         model = Struktura(reader);
                     }
+                    reader.Close();
+
+
+                    ProduktModel produkt = new ProduktModel();
+                    command = new SqlCommand($"Select * from Produkt WHERE id = {model.Id_produktu}", Connection);
+                    reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        produkt = StrukturaProd(reader);
+                    }
+
+                    model.Produkt = produkt;
 
                     reader.Close();
+
                     Connection.Close();
                 }
                 catch (Exception ex)
@@ -150,9 +182,9 @@ namespace LOFitAPI.DbControllers.Menu
 
             return model;
         }
-        public static ProduktNaLiscieModel GetOnePlan(int id)
+        public static List<ProduktNaLiscieModel> GetOnePlan(int id)
         {
-            ProduktNaLiscieModel model = new ProduktNaLiscieModel();
+            List<ProduktNaLiscieModel> list = new List<ProduktNaLiscieModel>();
 
             using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
             {
@@ -165,10 +197,27 @@ namespace LOFitAPI.DbControllers.Menu
 
                     while (reader.Read())
                     {
-                        model = Struktura(reader);
+                        list.Add(Struktura(reader));
                     }
 
                     reader.Close();
+
+                    foreach (var item in list)
+                    {
+                        ProduktModel produkt = new ProduktModel();
+                        command = new SqlCommand($"Select * from Produkt WHERE id = {item.Id_produktu}", Connection);
+                        reader = command.ExecuteReader();
+
+                        while (reader.Read())
+                        {
+                            produkt = StrukturaProd(reader);
+                        }
+
+                        item.Produkt = produkt;
+
+                        reader.Close();
+                    }
+
                     Connection.Close();
                 }
                 catch (Exception ex)
@@ -177,7 +226,7 @@ namespace LOFitAPI.DbControllers.Menu
                 }
             }
 
-            return model;
+            return list;
         }
         public static List<ProduktNaLiscieModel> GetUserList(int Id_usera, DateTime date)
         {
@@ -207,16 +256,7 @@ namespace LOFitAPI.DbControllers.Menu
 
                         while (reader.Read())
                         {
-                            produkt.Id = (int)reader[0];
-                            try { produkt.Id_konta = (int)reader[1]; } catch { produkt.Id_konta = null; }
-                            produkt.Nazwa = (string)reader[2];
-                            try { produkt.Ean = (int)reader[3]; } catch { produkt.Ean = null; }
-                            produkt.Gramy = (int)reader[4];
-                            produkt.Kcla = (int)reader[5];
-                            try { produkt.Bialko = (int)reader[6]; } catch { produkt.Bialko = null; }
-                            try { produkt.Tluszcze = (int)reader[7]; } catch { produkt.Tluszcze = null; }
-                            try { produkt.Wegle = (int)reader[8]; } catch { produkt.Wegle = null; }
-                            produkt.W_bazie_programu = (int)reader[9];
+                            produkt = StrukturaProd(reader);
                         }
 
                         item.Produkt = produkt;

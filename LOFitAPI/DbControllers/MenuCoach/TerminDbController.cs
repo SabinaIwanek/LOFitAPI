@@ -1,31 +1,26 @@
 ﻿using LOFitAPI.DbModels.MenuCoach;
 using LOFitAPI.Tools;
 using Microsoft.Data.SqlClient;
+using System;
 
 namespace LOFitAPI.DbControllers.MenuCoach
 {
-    public static class PlanTygodniowyDbController
+    public static class TerminDbController
     {
-        private static PlanTygodniowyModel Struktura(SqlDataReader reader)
+        private static TerminModel Struktura(SqlDataReader reader)
         {
-            PlanTygodniowyModel model = new PlanTygodniowyModel();
+            TerminModel model = new TerminModel();
 
             model.Id = (int)reader[0];
             model.Id_trenera = (int)reader[1];
-            model.Typ = (int)reader[2];
-            model.Nazwa = (string)reader[3];
-            model.Dzien1 = (int)reader[4];
-            model.Dzien2 = (int)reader[5];
-            model.Dzien3 = (int)reader[6];
-            model.Dzien4 = (int)reader[7];
-            model.Dzien5 = (int)reader[8];
-            model.Dzien6 = (int)reader[9];
-            model.Dzien7 = (int)reader[10];
-            model.Kcla = (int)reader[11];
+            model.Id_usera = (int)reader[2];
+            model.Termin_od = (DateTime)reader[3];
+            model.Termin_do = (DateTime)reader[4];
+            model.Zatwierdzony = (int)reader[5] == 0 ? false : true;
 
             return model;
         }
-        public static int Add(PlanTygodniowyModel model)
+        public static int Add(TerminModel model)
         {
             int id = 0;
 
@@ -34,10 +29,9 @@ namespace LOFitAPI.DbControllers.MenuCoach
                 try
                 {
                     Connection.Open();
-                    string query = $"INSERT INTO PlanTygodniowy VALUES({model.Id_trenera}, {model.Typ}, {SqlTools.ReturnString(model.Nazwa)}, {model.Dzien1}, {model.Dzien2}, {model.Dzien3}, {model.Dzien4}, {model.Dzien5}, {model.Dzien6}, {model.Dzien7}, {model.Kcla}); SELECT SCOPE_IDENTITY();";
+                    string query = $"INSERT INTO Termin VALUES({model.Id_trenera}, {model.Id_usera}, {SqlTools.ReturnDateTime(model.Termin_od)}, {SqlTools.ReturnDateTime(model.Termin_do)}, 0); SELECT SCOPE_IDENTITY();";
 
                     SqlCommand command = new SqlCommand(query, Connection);
-                    //SqlDataReader reader = command.ExecuteReader();
                     id = Convert.ToInt32(command.ExecuteScalar());
 
                     //reader.Close();
@@ -51,29 +45,6 @@ namespace LOFitAPI.DbControllers.MenuCoach
 
             return id;
         }
-        public static string Update(PlanTygodniowyModel model)
-        {
-            using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
-            {
-                try
-                {
-                    Connection.Open();
-                    string query = $"UPDATE PlanTygodniowy SET nazwa ={SqlTools.ReturnString(model.Nazwa)}, dzien1={model.Dzien1}, dzien2={model.Dzien2}, dzien3={model.Dzien3}, dzien4={model.Dzien4}, dzien5={model.Dzien5}, dzien6={model.Dzien6}, dzien7={model.Dzien7}, kcla={model.Kcla} WHERE id = {model.Id}";
-
-                    SqlCommand command = new SqlCommand(query, Connection);
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    reader.Close();
-                    Connection.Close();
-                }
-                catch (Exception ex)
-                {
-                    return ex.ToString();
-                }
-            }
-
-            return "Ok";
-        }
         public static string Delete(int id)
         {
             try
@@ -82,7 +53,7 @@ namespace LOFitAPI.DbControllers.MenuCoach
                 {
                     Connection.Open();
                     //Utworzenie Użytkownika
-                    string query = $"Delete PlanTygodniowy WHERE id={id};";
+                    string query = $"Delete Termin WHERE id={id};";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
@@ -99,9 +70,9 @@ namespace LOFitAPI.DbControllers.MenuCoach
                 return ex.ToString();
             }
         }
-        public static PlanTygodniowyModel GetOne(int id)
+        public static TerminModel GetOne(int id)
         {
-            PlanTygodniowyModel model = new PlanTygodniowyModel();
+            TerminModel model = new TerminModel();
 
             using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
             {
@@ -109,7 +80,7 @@ namespace LOFitAPI.DbControllers.MenuCoach
                 {
                     Connection.Open();
 
-                    SqlCommand command = new SqlCommand($"Select * from PlanTygodniowy WHERE id = {id}", Connection);
+                    SqlCommand command = new SqlCommand($"Select * from Termin WHERE id = {id}", Connection);
                     SqlDataReader reader = command.ExecuteReader();
 
                     while (reader.Read())
@@ -128,9 +99,9 @@ namespace LOFitAPI.DbControllers.MenuCoach
 
             return model;
         }
-        public static List<PlanTygodniowyModel> GetByType(int idTrenera, int typ)
+        public static List<TerminModel> GetByDay(int idTrenera, DateTime date)
         {
-            List<PlanTygodniowyModel> list = new List<PlanTygodniowyModel>();
+            List<TerminModel> list = new List<TerminModel>();
 
             using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
             {
@@ -138,7 +109,36 @@ namespace LOFitAPI.DbControllers.MenuCoach
                 {
                     Connection.Open();
 
-                    SqlCommand command = new SqlCommand($"Select * from PlanTygodniowy WHERE id_trenera = {idTrenera} AND typ = {typ}", Connection);
+                    SqlCommand command = new SqlCommand($"Select * from Termin WHERE id_trenera = {idTrenera} AND CAST(termin_od AS DATE) = {SqlTools.ReturnDate(date)}", Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        list.Add(Struktura(reader));
+                    }
+
+                    reader.Close();
+                    Connection.Close();
+                }
+                catch (Exception ex)
+                {
+                    string error = ex.ToString();
+                }
+            }
+
+            return list;
+        }
+        public static List<TerminModel> GetAll(int idTrenera)
+        {
+            List<TerminModel> list = new List<TerminModel>();
+
+            using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+            {
+                try
+                {
+                    Connection.Open();
+
+                    SqlCommand command = new SqlCommand($"Select * from Termin WHERE id_trenera = {idTrenera}", Connection);
                     SqlDataReader reader = command.ExecuteReader();
 
                     while (reader.Read())
