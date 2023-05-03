@@ -1,10 +1,8 @@
 ﻿using LOFitAPI.DbControllers.Accounts;
 using LOFitAPI.DbControllers.Menu;
-using LOFitAPI.DbControllers.MenuCoach;
 using LOFitAPI.DbModels.Menu;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics.Metrics;
 
 namespace LOFitAPI.Controllers._Menu
 {
