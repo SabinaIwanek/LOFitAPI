@@ -1,4 +1,5 @@
-﻿using LOFitAPI.DbModels.MenuCoach;
+﻿using LOFitAPI.DbModels.Menu;
+using LOFitAPI.DbModels.MenuCoach;
 using LOFitAPI.Tools;
 using Microsoft.Data.SqlClient;
 using System;
@@ -44,6 +45,29 @@ namespace LOFitAPI.DbControllers.MenuCoach
             }
 
             return id;
+        }
+        public static string Update(TerminModel model)
+        {
+            using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+            {
+                try
+                {
+                    Connection.Open();
+                    string query = $"UPDATE Termin SET  termin_od={SqlTools.ReturnDateTime(model.Termin_od)},termin_do={SqlTools.ReturnDateTime(model.Termin_do)},zatwierdzony={SqlTools.ReturnBool(model.Zatwierdzony)} WHERE id = {SqlTools.ReturnString(model.Id)}";
+
+                    SqlCommand command = new SqlCommand(query, Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    reader.Close();
+                    Connection.Close();
+                }
+                catch (Exception ex)
+                {
+                    return ex.ToString();
+                }
+            }
+
+            return "Ok";
         }
         public static string Delete(int id)
         {
@@ -139,6 +163,35 @@ namespace LOFitAPI.DbControllers.MenuCoach
                     Connection.Open();
 
                     SqlCommand command = new SqlCommand($"Select * from Termin WHERE id_trenera = {idTrenera}", Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        list.Add(Struktura(reader));
+                    }
+
+                    reader.Close();
+                    Connection.Close();
+                }
+                catch (Exception ex)
+                {
+                    string error = ex.ToString();
+                }
+            }
+
+            return list;
+        }
+        public static List<TerminModel> GetAllUser(int idUsera)
+        {
+            List<TerminModel> list = new List<TerminModel>();
+
+            using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+            {
+                try
+                {
+                    Connection.Open();
+
+                    SqlCommand command = new SqlCommand($"Select * from Termin WHERE id_usera = {idUsera}", Connection);
                     SqlDataReader reader = command.ExecuteReader();
 
                     while (reader.Read())

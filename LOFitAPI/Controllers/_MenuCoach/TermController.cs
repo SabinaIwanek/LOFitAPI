@@ -1,5 +1,7 @@
 ﻿using LOFitAPI.DbControllers.Accounts;
+using LOFitAPI.DbControllers.Menu;
 using LOFitAPI.DbControllers.MenuCoach;
+using LOFitAPI.DbModels.Menu;
 using LOFitAPI.DbModels.MenuCoach;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -27,6 +29,14 @@ namespace LOFitAPI.Controllers._Menu
             return Ok(id);
         }
 
+        [HttpPut]
+        public ActionResult<string> Update(TerminModel model)
+        {
+            string answer = TerminDbController.Update(model);
+
+            return Ok(answer);
+        }
+
         [HttpDelete]
         [Route("{id}")]
         public ActionResult<string> Delete(int id)
@@ -51,7 +61,35 @@ namespace LOFitAPI.Controllers._Menu
         }
 
         [HttpGet]
-        [Route("{dateString}")]
+        [Route("getnext/{id}")]
+        public ActionResult<TerminModel> GetNext(int id)
+        {
+            if(id == -1)
+            {
+                int? idUsera = KontoDbController.ReturnUserId(User.Identity?.Name);
+
+                if (idUsera == null)
+                    return Unauthorized();
+
+                id = (int)idUsera;
+            }
+            
+
+            var list = TerminDbController.GetAllUser(id);
+
+            if (list == null || !list.Any())
+                return Ok(new TerminModel());
+
+            TerminModel? model = list.Where(x => x.Termin_od >= DateTime.Now)?.OrderBy(x => x.Termin_od).FirstOrDefault();
+
+            if (model == null)
+                return Ok(new TerminModel());
+
+            return Ok(model);
+        }
+
+        [HttpGet]
+        [Route("byDay/{dateString}")]
         public ActionResult<List<TerminModel>> GetByDate(string dateString)
         {
             DateTime date = DateTime.Parse(dateString);
