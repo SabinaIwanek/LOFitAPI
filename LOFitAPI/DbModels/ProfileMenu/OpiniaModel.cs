@@ -8,6 +8,5 @@
         public string? Opis { get; set; }
         public int Ocena { get; set; }
         public int Zgloszona { get; set; }
-        public string Opis_zgloszenia { get; set; }
     }
 }

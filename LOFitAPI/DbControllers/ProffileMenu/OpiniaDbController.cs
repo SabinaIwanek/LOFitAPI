@@ -6,6 +6,20 @@ namespace LOFitAPI.DbControllers.ProffileMenu
 {
     public static class OpiniaDbController
     {
+        public static OpiniaModel Struktura(SqlDataReader reader)
+        {
+            OpiniaModel model = new OpiniaModel();
+
+
+            model.Id = (int)reader[0];
+            model.Id_usera = (int)reader[1];
+            model.Id_trenera = (int)reader[2];
+            try { model.Opis = reader[3].ToString(); } catch { model.Opis = null; }
+            model.Ocena = (int)reader[4];
+            model.Zgloszona = (int)reader[5];
+
+            return model;
+        }
         public static string Add(OpiniaModel model)
         {
             using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
@@ -13,7 +27,7 @@ namespace LOFitAPI.DbControllers.ProffileMenu
                 try
                 {
                     Connection.Open();
-                    string query = $"INSERT INTO Opinia VALUES({model.Id_usera},{model.Id_trenera}, {SqlTools.ReturnString(model.Opis)},{model.Ocena}, {model.Zgloszona},{SqlTools.ReturnString(model.Opis_zgloszenia)})";
+                    string query = $"INSERT INTO Opinia VALUES({model.Id_usera},{model.Id_trenera}, {SqlTools.ReturnString(model.Opis)},{model.Ocena}, {model.Zgloszona})";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
@@ -36,7 +50,7 @@ namespace LOFitAPI.DbControllers.ProffileMenu
                 try
                 {
                     Connection.Open();
-                    string query = $"UPDATE Opinia SET id_usera={model.Id_usera},id_trenera={model.Id_trenera}, opis={SqlTools.ReturnString(model.Opis)},ocena={model.Ocena}, zgloszona={model.Zgloszona},opis_zgloszenia={SqlTools.ReturnString(model.Opis_zgloszenia)} WHERE id = {SqlTools.ReturnString(model.Id)}";
+                    string query = $"UPDATE Opinia SET id_usera={model.Id_usera},id_trenera={model.Id_trenera}, opis={SqlTools.ReturnString(model.Opis)},ocena={model.Ocena}, zgloszona={model.Zgloszona} WHERE id = {SqlTools.ReturnString(model.Id)}";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
@@ -94,13 +108,7 @@ namespace LOFitAPI.DbControllers.ProffileMenu
 
                     while (reader.Read())
                     {
-                        model.Id = (int)reader[0];
-                        model.Id_usera = (int)reader[1];
-                        model.Id_trenera = (int)reader[2];
-                        try { model.Opis = reader[3].ToString(); } catch { model.Opis = null; }
-                        model.Ocena = (int)reader[4];
-                        model.Zgloszona = (int)reader[5];
-                        model.Opis_zgloszenia = (string)reader[6];
+                        model = Struktura(reader);
                     }
 
                     reader.Close();
@@ -131,13 +139,7 @@ namespace LOFitAPI.DbControllers.ProffileMenu
 
                     while (reader.Read())
                     {
-                        model.Id = (int)reader[0];
-                        model.Id_usera = (int)reader[1];
-                        model.Id_trenera = (int)reader[2];
-                        try { model.Opis = reader[3].ToString(); } catch { model.Opis = null; }
-                        model.Ocena = (int)reader[4];
-                        model.Zgloszona = (int)reader[5];
-                        model.Opis_zgloszenia = (string)reader[6];
+                        model = Struktura(reader);
                     }
 
                     reader.Close();
@@ -166,17 +168,7 @@ namespace LOFitAPI.DbControllers.ProffileMenu
 
                     while (reader.Read())
                     {
-                        OpiniaModel model = new OpiniaModel();
-
-                        model.Id = (int)reader[0];
-                        model.Id_usera = (int)reader[1];
-                        model.Id_trenera = (int)reader[2];
-                        try { model.Opis = reader[3].ToString(); } catch { model.Opis = null; }
-                        model.Ocena = (int)reader[4];
-                        model.Zgloszona = (int)reader[5];
-                        model.Opis_zgloszenia = (string)reader[6];
-
-                        list.Add(model);
+                        list.Add(Struktura(reader));
                     }
 
                     reader.Close();
@@ -205,17 +197,7 @@ namespace LOFitAPI.DbControllers.ProffileMenu
 
                     while (reader.Read())
                     {
-                        OpiniaModel model = new OpiniaModel();
-
-                        model.Id = (int)reader[0];
-                        model.Id_usera = (int)reader[1];
-                        model.Id_trenera = (int)reader[2];
-                        try { model.Opis = reader[3].ToString(); } catch { model.Opis = null; }
-                        model.Ocena = (int)reader[4];
-                        model.Zgloszona = (int)reader[5];
-                        model.Opis_zgloszenia = (string)reader[6];
-
-                        list.Add(model);
+                        list.Add(Struktura(reader));
                     }
 
                     reader.Close();
@@ -246,17 +228,7 @@ namespace LOFitAPI.DbControllers.ProffileMenu
 
                     while (reader.Read())
                     {
-                        OpiniaModel model = new OpiniaModel();
-
-                        model.Id = (int)reader[0];
-                        model.Id_usera = (int)reader[1];
-                        model.Id_trenera = (int)reader[2];
-                        try { model.Opis = reader[3].ToString(); } catch { model.Opis = null; }
-                        model.Ocena = (int)reader[4];
-                        model.Zgloszona = (int)reader[5];
-                        model.Opis_zgloszenia = (string)reader[6];
-
-                        list.Add(model);
+                        list.Add(Struktura(reader));
                     }
 
                     reader.Close();

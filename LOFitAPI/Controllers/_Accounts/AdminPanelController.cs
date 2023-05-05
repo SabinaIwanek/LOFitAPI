@@ -113,33 +113,6 @@ namespace LOFitAPI.Controllers._Accounts
         }
 
         [HttpGet]
-        [Route("reports/{type}")]
-        public ActionResult<List<ZgloszenieModel>> GetWgTypeReports(int type)
-        {
-            int? accountType = KontoDbController.ReturnUserType(User.Identity?.Name);
-            if (accountType == null || accountType != 0) return Unauthorized();
-
-            List<ZgloszenieModel> list = new List<ZgloszenieModel>();
-
-            list = ZgloszenieDbController.GetWgType(type);
-
-            return Ok(list);
-        }
-
-        [HttpGet]
-        [Route("reports/{id}/{type}")]
-        public ActionResult<string> SetReport(int id, int type)
-        {
-            int? accountType = KontoDbController.ReturnUserType(User.Identity?.Name);
-            if (accountType == null || accountType != 0) return Unauthorized();
-
-            string wynik = ZgloszenieDbController.SetState(id, type);
-
-            return Ok(wynik);
-        }
-
-
-        [HttpGet]
         [Route("products/{type}")]
         public ActionResult<List<ProduktModel>> GetWgTypeProducts(int type)
         {
