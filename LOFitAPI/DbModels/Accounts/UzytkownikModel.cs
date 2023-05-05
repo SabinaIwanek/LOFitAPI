@@ -10,5 +10,9 @@
         public int? Id_trenera { get; set; }
         public int? Id_dietetyka { get; set; }
         public int? Nr_telefonu { get; set; }
+        public int? Waga_poczatkowa { get; set; }
+        public int? Waga_cel { get; set; }
+        public int? Kcla_dzien { get; set; }
+        public int? Kcla_dzien_trening { get; set; }
     }
 }
