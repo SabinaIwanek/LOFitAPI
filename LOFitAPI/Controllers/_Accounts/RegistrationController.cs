@@ -12,6 +12,11 @@ namespace LOFitAPI.Controllers._Accounts
         [HttpPost]
         public ActionResult<string> RegistrationUzytkownik(TrenerPostModel formOgolne)
         {
+            int? idUsera = KontoDbController.ReturnUserId(formOgolne.Email);
+
+            if (idUsera != null)
+                return Ok("Użytkownik o podanym email już istnieje.");
+
             UzytkownikPostModel form = new UzytkownikPostModel(formOgolne);
 
             if (form == null) return Ok("Błąd danych.");
@@ -26,6 +31,11 @@ namespace LOFitAPI.Controllers._Accounts
         [HttpPost]
         public ActionResult<string> RegistrationAdmin(AdminPostModel form)
         {
+            int? idUsera = KontoDbController.ReturnUserId(form.Email);
+
+            if (idUsera != null)
+                return Ok("Użytkownik o podanym email już istnieje.");
+
             if (form == null) return Ok("Błąd danych.");
 
             if (AdminDbController.Add(form))
@@ -38,6 +48,11 @@ namespace LOFitAPI.Controllers._Accounts
         [HttpPost]
         public ActionResult<string> RegistrationTrener(TrenerPostModel form)
         {
+            int? idUsera = KontoDbController.ReturnUserId(form.Email);
+
+            if (idUsera != null)
+                return Ok("Użytkownik o podanym email już istnieje.");
+
             if (form == null) return Ok("Błąd danych.");
 
             return Ok(TrenerDbController.Add(form));

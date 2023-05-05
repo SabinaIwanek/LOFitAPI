@@ -1,4 +1,5 @@
 ﻿using LOFitAPI.DbModels.Menu;
+using LOFitAPI.DbModels.ProfileMenu;
 using LOFitAPI.Tools;
 using Microsoft.Data.SqlClient;
 
@@ -6,6 +7,23 @@ namespace LOFitAPI.DbControllers.Menu
 {
     public static class ProduktDbController
     {
+        public static ProduktModel Struktura(SqlDataReader reader)
+        {
+            ProduktModel model = new ProduktModel();
+
+            model.Id = (int)reader[0];
+            try { model.Id_konta = (int)reader[1]; } catch { model.Id_konta = null; }
+            model.Nazwa = (string)reader[2];
+            try { model.Ean = (int)reader[3]; } catch { model.Ean = null; }
+            model.Gramy = (int)reader[4];
+            model.Kcla = (int)reader[5];
+            try { model.Bialko = (int)reader[6]; } catch { model.Bialko = null; }
+            try { model.Tluszcze = (int)reader[7]; } catch { model.Tluszcze = null; }
+            try { model.Wegle = (int)reader[8]; } catch { model.Wegle = null; }
+            model.W_bazie_programu = (int)reader[9];
+
+            return model;
+        }
         public static int Add(ProduktModel model)
         {
             int id = 0;
@@ -109,16 +127,7 @@ namespace LOFitAPI.DbControllers.Menu
 
                     while (reader.Read())
                     {
-                        model.Id = (int)reader[0];
-                        try { model.Id_konta = (int)reader[1]; } catch { model.Id_konta = null; }
-                        model.Nazwa = (string)reader[2];
-                        try { model.Ean = (int)reader[3]; } catch { model.Ean = null; }
-                        model.Gramy = (int)reader[4];
-                        model.Kcla = (int)reader[5];
-                        try { model.Bialko = (int)reader[6]; } catch { model.Bialko = null; }
-                        try { model.Tluszcze = (int)reader[7]; } catch { model.Tluszcze = null; }
-                        try { model.Wegle = (int)reader[8]; } catch { model.Wegle = null; }
-                        model.W_bazie_programu = (int)reader[9];
+                        model = Struktura(reader);
                     }
 
                     reader.Close();
@@ -147,20 +156,7 @@ namespace LOFitAPI.DbControllers.Menu
 
                     while (reader.Read())
                     {
-                        ProduktModel model = new ProduktModel();
-
-                        model.Id = (int)reader[0];
-                        try { model.Id_konta = (int)reader[1]; } catch { model.Id_konta = null; }
-                        model.Nazwa = (string)reader[2];
-                        try { model.Ean = (int)reader[3]; } catch { model.Ean = null; }
-                        model.Gramy = (int)reader[4];
-                        model.Kcla = (int)reader[5];
-                        try { model.Bialko = (int)reader[6]; } catch { model.Bialko = null; }
-                        try { model.Tluszcze = (int)reader[7]; } catch { model.Tluszcze = null; }
-                        try { model.Wegle = (int)reader[8]; } catch { model.Wegle = null; }
-                        model.W_bazie_programu = (int)reader[9];
-
-                        list.Add(model);
+                        list.Add(Struktura(reader));
                     }
 
                     reader.Close();
@@ -189,20 +185,7 @@ namespace LOFitAPI.DbControllers.Menu
 
                     while (reader.Read())
                     {
-                        ProduktModel model = new ProduktModel();
-
-                        model.Id = (int)reader[0];
-                        try { model.Id_konta = (int)reader[1]; } catch { model.Id_konta = null; }
-                        model.Nazwa = (string)reader[2];
-                        try { model.Ean = (int)reader[3]; } catch { model.Ean = null; }
-                        model.Gramy = (int)reader[4];
-                        model.Kcla = (int)reader[5];
-                        try { model.Bialko = (int)reader[6]; } catch { model.Bialko = null; }
-                        try { model.Tluszcze = (int)reader[7]; } catch { model.Tluszcze = null; }
-                        try { model.Wegle = (int)reader[8]; } catch { model.Wegle = null; }
-                        model.W_bazie_programu = (int)reader[9];
-
-                        list.Add(model);
+                        list.Add(Struktura(reader));
                     }
 
                     reader.Close();
@@ -215,6 +198,62 @@ namespace LOFitAPI.DbControllers.Menu
             }
 
             return list;
+        }
+
+
+        // Admin
+        public static List<ProduktModel> GetWgType(int statusWeryfikacji)
+        {
+            List<ProduktModel> list = new List<ProduktModel>();
+
+            using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+            {
+                try
+                {
+                    Connection.Open();
+
+                    SqlCommand command = new SqlCommand($"Select * from Produkt WHERE w_bazie_programu={statusWeryfikacji}", Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        list.Add(Struktura(reader));
+                    }
+
+                    reader.Close();
+                    Connection.Close();
+                }
+                catch (Exception ex)
+                {
+                    string error = ex.ToString();
+                }
+            }
+
+            return list;
+        }
+        public static string SetState(int id, int state)
+        {
+            try
+            {
+                using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+                {
+                    Connection.Open();
+
+                    string query = $"UPDATE Produkt SET w_bazie_programu={state} WHERE id = {id}";
+
+                    SqlCommand command = new SqlCommand(query, Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    reader.Close();
+                    Connection.Close();
+                }
+
+                return "Ok";
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
         }
     }
 }

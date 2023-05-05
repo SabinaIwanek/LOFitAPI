@@ -1,6 +1,8 @@
 ﻿using LOFitAPI.DbControllers.Accounts;
+using LOFitAPI.DbControllers.Menu;
 using LOFitAPI.DbControllers.ProffileMenu;
 using LOFitAPI.DbModels.Accounts;
+using LOFitAPI.DbModels.Menu;
 using LOFitAPI.DbModels.ProfileMenu;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +15,28 @@ namespace LOFitAPI.Controllers._Accounts
     [Route("api/[controller]")]
     public class AdminPanelController : ControllerBase
     {
+
+        [HttpGet]
+        [Route("{id}")]
+        public ActionResult<AdministratorModel> GetOne(int id)
+        {
+            if(id == -1)
+            {
+                int? idAdmin = KontoDbController.ReturnUserId(User?.Identity?.Name);
+
+                if (idAdmin == null)
+                    return Unauthorized();
+
+                id = (int)idAdmin;
+            }
+
+            AdministratorModel model = AdminDbController.GetOne(id);
+
+            return Ok(model);
+        }
+
+        //Zarządzanie
+
         [HttpGet]
         [Route("coachs/{type}")]
         public ActionResult<List<TrenerModel>> GetWgTypeCoach(int type)
@@ -110,6 +134,33 @@ namespace LOFitAPI.Controllers._Accounts
             if (accountType == null || accountType != 0) return Unauthorized();
 
             string wynik = ZgloszenieDbController.SetState(id, type);
+
+            return Ok(wynik);
+        }
+
+
+        [HttpGet]
+        [Route("products/{type}")]
+        public ActionResult<List<ProduktModel>> GetWgTypeProducts(int type)
+        {
+            int? accountType = KontoDbController.ReturnUserType(User.Identity?.Name);
+            if (accountType == null || accountType != 0) return Unauthorized();
+
+            List<ProduktModel> list = new List<ProduktModel>();
+
+            list = ProduktDbController.GetWgType(type);
+
+            return Ok(list);
+        }
+
+        [HttpGet]
+        [Route("products/{id}/{type}")]
+        public ActionResult<string> SetProducts(int id, int type)
+        {
+            int? accountType = KontoDbController.ReturnUserType(User.Identity?.Name);
+            if (accountType == null || accountType != 0) return Unauthorized();
+
+            string wynik = ProduktDbController.SetState(id, type);
 
             return Ok(wynik);
         }

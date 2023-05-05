@@ -1,4 +1,5 @@
-﻿using LOFitAPI.DbModels.Menu;
+﻿using LOFitAPI.DbModels.Accounts;
+using LOFitAPI.DbModels.Menu;
 using LOFitAPI.Tools;
 using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
@@ -7,6 +8,27 @@ namespace LOFitAPI.DbControllers.Menu
 {
     public static class PomiarDbController
     {
+        private static PomiarModel Struktura(SqlDataReader reader)
+        {
+            PomiarModel model = new PomiarModel();
+
+            model.Id = (int)reader[0];
+            model.Id_usera = (int)reader[1];
+            model.Data_pomiaru = (DateTime)reader[2];
+            try { model.Waga = (decimal)reader[3]; } catch { model.Waga = null; }
+            try { model.Procent_tluszczu = (decimal)reader[4]; } catch { model.Procent_tluszczu = null; }
+            try { model.Biceps = (decimal)reader[5]; } catch { model.Biceps = null; }
+            try { model.Klatka_piersiowa = (decimal)reader[6]; } catch { model.Klatka_piersiowa = null; }
+            try { model.Pod_klatka_piersiowa = (decimal)reader[7]; } catch { model.Pod_klatka_piersiowa = null; }
+            try { model.Talia = (decimal)reader[8]; } catch { model.Talia = null; }
+            try { model.Pas = (decimal)reader[9]; } catch { model.Pas = null; }
+            try { model.Posladki = (decimal)reader[10]; } catch { model.Posladki = null; }
+            try { model.Udo = (decimal)reader[11]; } catch { model.Udo = null; }
+            try { model.Kolano = (decimal)reader[12]; } catch { model.Kolano = null; }
+            try { model.Lydka = (decimal)reader[13]; } catch { model.Lydka = null; }
+
+            return model;
+        }
         public static string Add(PomiarModel model)
         {
             using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
@@ -68,20 +90,7 @@ namespace LOFitAPI.DbControllers.Menu
 
                     while (reader.Read())
                     {
-                        model.Id = (int)reader[0];
-                        model.Id_usera = (int)reader[1];
-                        model.Data_pomiaru = (DateTime)reader[2];
-                        try { model.Waga = (decimal)reader[3]; } catch { model.Waga = null; }
-                        try { model.Procent_tluszczu = (decimal)reader[4]; } catch { model.Procent_tluszczu = null; }
-                        try { model.Biceps = (decimal)reader[5]; } catch { model.Biceps = null; }
-                        try { model.Klatka_piersiowa = (decimal)reader[6]; } catch { model.Klatka_piersiowa = null; }
-                        try { model.Pod_klatka_piersiowa = (decimal)reader[7]; } catch { model.Pod_klatka_piersiowa = null; }
-                        try { model.Talia = (decimal)reader[8]; } catch { model.Talia = null; }
-                        try { model.Pas = (decimal)reader[9]; } catch { model.Pas = null; }
-                        try { model.Posladki = (decimal)reader[10]; } catch { model.Posladki = null; }
-                        try { model.Udo = (decimal)reader[11]; } catch { model.Udo = null; }
-                        try { model.Kolano = (decimal)reader[12]; } catch { model.Kolano = null; }
-                        try { model.Lydka = (decimal)reader[13]; } catch { model.Lydka = null; }
+                        model = Struktura(reader);
                     }
 
                     reader.Close();
@@ -110,24 +119,7 @@ namespace LOFitAPI.DbControllers.Menu
 
                     while (reader.Read())
                     {
-                        PomiarModel model = new PomiarModel();
-
-                        model.Id = (int)reader[0];
-                        model.Id_usera = (int)reader[1];
-                        model.Data_pomiaru = (DateTime)reader[2];
-                        try { model.Waga = (decimal)reader[3]; } catch { model.Waga = null; }
-                        try { model.Procent_tluszczu = (decimal)reader[4]; } catch { model.Procent_tluszczu = null; }
-                        try { model.Biceps = (decimal)reader[5]; } catch { model.Biceps = null; }
-                        try { model.Klatka_piersiowa = (decimal)reader[6]; } catch { model.Klatka_piersiowa = null; }
-                        try { model.Pod_klatka_piersiowa = (decimal)reader[7]; } catch { model.Pod_klatka_piersiowa = null; }
-                        try { model.Talia = (decimal)reader[8]; } catch { model.Talia = null; }
-                        try { model.Pas = (decimal)reader[9]; } catch { model.Pas = null; }
-                        try { model.Posladki = (decimal)reader[10]; } catch { model.Posladki = null; }
-                        try { model.Udo = (decimal)reader[11]; } catch { model.Udo = null; }
-                        try { model.Kolano = (decimal)reader[12]; } catch { model.Kolano = null; }
-                        try { model.Lydka = (decimal)reader[13]; } catch { model.Lydka = null; }
-
-                        list.Add(model);
+                        list.Add(Struktura(reader));
                     }
 
                     reader.Close();
@@ -140,6 +132,64 @@ namespace LOFitAPI.DbControllers.Menu
             }
 
             return ResponseTools.ReturnWeekMeasurement(list, date);
+        }
+        public static PomiarModel GetLast(int idUsera)
+        {
+            PomiarModel model = new PomiarModel();
+
+            using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+            {
+                try
+                {
+                    Connection.Open();
+
+                    SqlCommand command = new SqlCommand($"Select TOP 1 * from Pomiar WHERE id_usera = {idUsera} ORDER BY data_pomiaru DESC", Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        model = Struktura(reader);
+                    }
+
+                    reader.Close();
+                    Connection.Close();
+                }
+                catch (Exception ex)
+                {
+                    string error = ex.ToString();
+                }
+            }
+
+            return model;
+        }
+        public static List<PomiarModel> GetAll(int idUsera)
+        {
+            List<PomiarModel> list = new List<PomiarModel>();
+
+            using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+            {
+                try
+                {
+                    Connection.Open();
+
+                    SqlCommand command = new SqlCommand($"Select * from Pomiar WHERE id_usera = {idUsera} ORDER BY data_pomiaru", Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        list.Add(Struktura(reader));
+                    }
+
+                    reader.Close();
+                    Connection.Close();
+                }
+                catch (Exception ex)
+                {
+                    string error = ex.ToString();
+                }
+            }
+
+            return list;
         }
     }
 }

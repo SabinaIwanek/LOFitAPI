@@ -26,14 +26,33 @@ namespace LOFitAPI.Controllers._Menu
 
             return Ok(measurement);
         }
-        
+
+
+        [HttpGet]
+        [Route("last/{id}")]
+        public ActionResult<PomiarModel> GetLast(int id)
+        {
+            if (id == -1)
+            {
+                int? idUsera = KontoDbController.ReturnUserId(User?.Identity?.Name);
+
+                if (idUsera == null)
+                    return Unauthorized();
+                id = (int)idUsera;
+            }
+
+            PomiarModel measurement = PomiarDbController.GetLast(id);
+
+            return Ok(measurement);
+        }
+
         [HttpGet]
         [Route("week/{dateString}/{idUsera}")]
         public ActionResult<List<PomiarModel>> GetWeekById(string dateString, int idUsera)
         {
             DateTime date = DateTime.Parse(dateString);
 
-            if(idUsera == -1)
+            if (idUsera == -1)
             {
                 int? id = KontoDbController.ReturnUserId(User.Identity?.Name);
 
