@@ -107,7 +107,7 @@ namespace LOFitAPI.Controllers._Accounts
             int? accountType = KontoDbController.ReturnUserType(User.Identity?.Name);
             if (accountType == null || accountType != 0) return Unauthorized();
 
-            string wynik = type == 0 ? OpiniaDbController.Delete(id) : OpiniaDbController.ResetState(id);
+            string wynik = type == 1 ? OpiniaDbController.Delete(id) : OpiniaDbController.ResetState(id);
 
             return Ok(wynik);
         }
@@ -243,6 +243,18 @@ namespace LOFitAPI.Controllers._Accounts
             if (accountType == null || accountType != 0) return Unauthorized();
 
             string wynik = KontoDbController.DeleteKonto(id, type);
+
+            return Ok(wynik);
+        }
+
+        [HttpGet]
+        [Route("appusers/isblock/{id}/{type}")]
+        public ActionResult<bool> IsBlock(int id, int type)
+        {
+            int? accountType = KontoDbController.ReturnUserType(User.Identity?.Name);
+            if (accountType == null || accountType != 0) return Unauthorized();
+
+            bool wynik = KontoDbController.IsBlock(id, type);
 
             return Ok(wynik);
         }

@@ -278,7 +278,7 @@ namespace LOFitAPI.DbControllers.ProffileMenu
                 {
                     Connection.Open();
 
-                    string query = $"UPDATE Opinia SET zgloszona=0,opis_zgloszenia='' WHERE id = {id}";
+                    string query = $"UPDATE Opinia SET zgloszona=0 WHERE id = {id}";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();

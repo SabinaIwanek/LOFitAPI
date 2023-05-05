@@ -352,5 +352,32 @@ namespace LOFitAPI.DbControllers.Accounts
                 return ex.ToString();
             }
         }
+        public static bool IsBlock(int id, int typ)
+        {
+            try
+            {
+                using (SqlConnection Connection = new SqlConnection(Config.DbConnection))
+                {
+                    Connection.Open();
+
+                    SqlCommand command = new SqlCommand($"SELECT * FROM Konto WHERE id_uzytkownika ={id} AND typ_konta ={typ}", Connection);
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        return (int)reader[4] == 1;
+                    }
+
+                    reader.Close();
+                    Connection.Close();
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
     }
 }
