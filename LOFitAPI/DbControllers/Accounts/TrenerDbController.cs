@@ -39,7 +39,7 @@ namespace LOFitAPI.DbControllers.Accounts
 
                     Connection.Open();
                     //Utworzenie Użytkownika
-                    string query = $"Insert INTO Trener VALUES('{form.Imie}',{SqlTools.ReturnString(form.Nazwisko)},{form.Plec},{SqlTools.ReturnDate(form.Data_urodzenia)}, {SqlTools.ReturnInt(form.Nr_telefonu)},NULL,{SqlTools.ReturnString(form.Miejscowosc)}, NULL, NULL, NULL, NULL,{dietetyk},{trener},{SqlTools.ReturnDateTime(DateTime.Now)})";
+                    string query = $"Insert INTO Trener VALUES('{form.Imie}',{SqlTools.ReturnString(form.Nazwisko)},{form.Plec},{SqlTools.ReturnDate(form.Data_urodzenia)}, {SqlTools.ReturnInt(form.Nr_telefonu)},NULL,{SqlTools.ReturnString(form.Miejscowosc)}, NULL, NULL,{dietetyk},{trener},{SqlTools.ReturnDateTime(DateTime.Now)})";
 
                     SqlCommand command = new SqlCommand(query, Connection);
                     SqlDataReader reader = command.ExecuteReader();
